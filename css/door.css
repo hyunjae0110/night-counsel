@@ -1,0 +1,70 @@
+/* 문 화면: 닫힌 문과 안내 */
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--night);
+  color: var(--ink);
+  font: 300 var(--text) / 1.7 var(--body);
+}
+
+.door-screen {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 48px 20px;
+  text-align: center;
+}
+
+.door {
+  width: 132px;
+  height: auto;
+  margin-bottom: 12px;
+}
+
+.name {
+  margin: 0;
+  font: 400 15px var(--display);
+  letter-spacing: 0.08em;
+  color: var(--dim);
+}
+
+h1 {
+  margin: 0;
+  font: 700 clamp(26px, 7vw, 34px) / 1.25 var(--display);
+  letter-spacing: 0.04em;
+  text-wrap: balance;
+}
+
+.lead {
+  margin: 0;
+  max-width: 30ch;
+  color: var(--dim);
+  word-break: keep-all;
+}
+
+.help {
+  margin: 36px 0 0;
+  padding-top: 20px;
+  max-width: 34ch;
+  border-top: 1px solid var(--line);
+  font-size: var(--text-small);
+  color: var(--dim);
+  word-break: keep-all;
+}
+
+.help strong {
+  font-weight: 500;
+  color: var(--ink);
+  white-space: nowrap;
+}

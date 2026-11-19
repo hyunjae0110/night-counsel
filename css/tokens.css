@@ -1,0 +1,21 @@
+/* 상담소의 색, 글씨, 간격. 값은 이 파일에서만 정한다. */
+:root {
+  color-scheme: dark;
+
+  --night: #07080f;
+  --panel: rgba(19, 18, 30, 0.86);
+  --line: rgba(236, 231, 219, 0.16);
+  --ink: #ece7db;
+  --dim: #aeabb8;
+  --flame: #f3b25a;
+  --card-back: #36284e;
+  --card-face: #efe8d8;
+
+  --display: "Nanum Myeongjo", "Noto Serif KR", serif;
+  --body: "Noto Sans KR", "Apple SD Gothic Neo", system-ui, sans-serif;
+
+  --text: 16px;
+  --text-small: 13px;
+  --tap: 44px;
+  --radius: 20px;
+}
