@@ -1,0 +1,50 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+
+    "door": {
+      ".read": true,
+      ".write": "auth != null && auth.uid === 'hBYrocbv0LdQf9NfE7M6bZOVjYI2'",
+      "open": { ".validate": "newData.isBoolean()" },
+      "changedAt": { ".validate": "newData.isNumber()" },
+      "$other": { ".validate": false }
+    },
+
+    "private": {
+      ".read": "auth != null && auth.uid === 'hBYrocbv0LdQf9NfE7M6bZOVjYI2'",
+      ".write": "auth != null && auth.uid === 'hBYrocbv0LdQf9NfE7M6bZOVjYI2'"
+    },
+
+    "rooms": {
+      ".read": "auth != null && auth.uid === 'hBYrocbv0LdQf9NfE7M6bZOVjYI2'",
+      ".write": "auth != null && auth.uid === 'hBYrocbv0LdQf9NfE7M6bZOVjYI2'",
+
+      "$room": {
+        "meta": {
+          ".read": "auth != null && (!data.child('guest').exists() || data.child('guest').val() === auth.uid)",
+          "createdAt": { ".validate": "newData.isNumber()" },
+          "guest": {
+            ".write": "auth != null && !data.exists() && newData.val() === auth.uid && root.child('rooms').child($room).child('meta').child('createdAt').exists() && root.child('door').child('open').val() === true",
+            ".validate": "newData.isString() && newData.val().length <= 128"
+          },
+          "$other": { ".validate": false }
+        },
+
+        "messages": {
+          ".read": "auth != null && root.child('rooms').child($room).child('meta').child('guest').val() === auth.uid",
+          "$message": {
+            ".write": "auth != null && !data.exists() && newData.exists() && root.child('rooms').child($room).child('meta').child('guest').val() === auth.uid && newData.child('from').val() === 'g'",
+            ".validate": "newData.hasChildren(['from', 'text', 'at'])",
+            "from": { ".validate": "newData.val() === 'c' || newData.val() === 'g'" },
+            "text": { ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 1000" },
+            "at": { ".validate": "newData.val() === now" },
+            "$other": { ".validate": false }
+          }
+        },
+
+        "$other": { ".validate": false }
+      }
+    }
+  }
+}

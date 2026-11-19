@@ -1,0 +1,79 @@
+// 화면에 보이는 문구는 모두 이 파일에 모은다.
+// 규칙: 해요체, 짧은 문장, 느낌표와 이모지 없음.
+export const COPY = {
+  counselorName: 'present',
+  guestName: '손님',
+
+  door: {
+    loading: { title: '문을 살피는 중이에요', lead: '잠시만 기다려 주세요.' },
+    closed: {
+      title: '지금은 문 닫았어요',
+      lead: '상담소를 준비하고 있어요. 문을 여는 날이 정해지면 이곳에 알릴게요.',
+    },
+    open: {
+      title: '상담소에 불이 켜져 있어요',
+      lead: '상담은 예약한 분께 보내 드린 초대 링크로 들어올 수 있어요.',
+    },
+    checking: { title: '초대 링크를 확인하는 중이에요', lead: '잠시만 기다려 주세요.' },
+    invited: {
+      title: '상담소에 불이 켜져 있어요',
+      lead: 'present와 1:1로 조용히 이야기해요. 나눈 대화는 상담이 끝나면 지워져요.',
+      action: '자리에 앉기',
+    },
+    invalid: {
+      title: '이 초대 링크로는 들어올 수 없어요',
+      lead: '이미 쓰였거나 끝난 상담의 링크예요. 예약하신 곳으로 다시 문의해 주세요.',
+    },
+    ended: {
+      title: '상담이 끝났어요',
+      lead: '나눈 대화는 모두 지워졌어요. 편히 돌아가세요.',
+    },
+    failed: {
+      title: '지금은 상담소에 들어올 수 없어요',
+      lead: '연결이 잘 되지 않았어요. 잠시 뒤에 다시 열어 주세요.',
+    },
+    sitFailed: '자리에 앉지 못했어요. 잠시 뒤에 다시 눌러 주세요.',
+  },
+
+  chat: {
+    label: '대화',
+    empty: '아직 나눈 이야기가 없어요',
+    seated: '손님이 자리에 앉았어요',
+    guestPlaceholder: '마음을 편하게 적어 주세요',
+    counselorPlaceholder: '손님에게 답하기',
+    inputLabel: '메시지',
+    send: '보내기',
+    sendFailed: '보내지 못했어요. 다시 보내 주세요.',
+    offline: '연결이 잠시 끊겼어요. 다시 잇는 중이에요.',
+  },
+
+  counselor: {
+    loginTitle: 'present 로그인',
+    email: '이메일',
+    password: '비밀번호',
+    login: '로그인',
+    loginFailed: '이메일이나 비밀번호가 맞지 않아요.',
+    logout: '로그아웃',
+    deniedTitle: '이 계정으로는 문을 열 수 없어요',
+    deniedLead: '상담사로 등록된 계정이 아니에요. 로그아웃한 뒤 present 계정으로 다시 들어와 주세요.',
+    checking: '확인하는 중이에요',
+    closedTitle: '상담소 문이 닫혀 있어요',
+    closedLead: '문을 열면 손님 화면에 불이 켜져요.',
+    openDoor: '상담소 열기',
+    closeDoor: '문 닫기',
+    openTitle: '문이 열려 있어요',
+    openLead: '초대 링크를 만들어 예약한 손님에게 보내 주세요.',
+    makeInvite: '초대 링크 만들기',
+    waitingTitle: '손님을 기다리는 중이에요',
+    waitingLead: '아래 링크를 손님에게 보내 주세요. 한 사람만 들어올 수 있어요.',
+    inviteLabel: '초대 링크',
+    copy: '링크 복사',
+    copied: '복사했어요',
+    copyFailed: '복사하지 못했어요. 링크를 직접 길게 눌러 복사해 주세요.',
+    cancelInvite: '초대 취소',
+    sessionTitle: '손님과 상담 중',
+    end: '상담 마치기',
+    endConfirm: '한 번 더 누르면 대화가 지워져요',
+    failed: '잘 되지 않았어요. 연결을 확인하고 다시 눌러 주세요.',
+  },
+};
