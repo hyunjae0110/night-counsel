@@ -5,20 +5,20 @@
 
     "door": {
       ".read": true,
-      ".write": "auth != null && auth.uid === 'PRESENT_UID'",
+      ".write": "auth != null && auth.uid === 'hBYrocbv0LdQf9NfE7M6bZOVjYI2'",
       "open": { ".validate": "newData.isBoolean()" },
       "changedAt": { ".validate": "newData.isNumber()" },
       "$other": { ".validate": false }
     },
 
     "private": {
-      ".read": "auth != null && auth.uid === 'PRESENT_UID'",
-      ".write": "auth != null && auth.uid === 'PRESENT_UID'"
+      ".read": "auth != null && auth.uid === 'hBYrocbv0LdQf9NfE7M6bZOVjYI2'",
+      ".write": "auth != null && auth.uid === 'hBYrocbv0LdQf9NfE7M6bZOVjYI2'"
     },
 
     "rooms": {
-      ".read": "auth != null && auth.uid === 'PRESENT_UID'",
-      ".write": "auth != null && auth.uid === 'PRESENT_UID'",
+      ".read": "auth != null && auth.uid === 'hBYrocbv0LdQf9NfE7M6bZOVjYI2'",
+      ".write": "auth != null && auth.uid === 'hBYrocbv0LdQf9NfE7M6bZOVjYI2'",
 
       "$room": {
         "meta": {
