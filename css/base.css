@@ -1,0 +1,111 @@
+/* 모든 화면이 함께 쓰는 바탕: 글씨, 단추, 입력칸 */
+* {
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--night);
+  color: var(--ink);
+  font: 300 var(--text) / 1.7 var(--body);
+  overflow-x: clip;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+.sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+button {
+  min-height: var(--tap);
+  padding: 10px 22px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink);
+  font: 400 15px var(--body);
+  cursor: pointer;
+}
+
+button:hover:not(:disabled) {
+  border-color: rgba(243, 178, 90, 0.6);
+}
+
+button:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+button.main {
+  border-color: var(--flame);
+  box-shadow: 0 0 26px rgba(243, 178, 90, 0.2);
+}
+
+button.quiet {
+  color: var(--dim);
+}
+
+input,
+textarea {
+  width: 100%;
+  min-height: var(--tap);
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.35);
+  color: var(--ink);
+  font: 300 var(--text) / 1.5 var(--body);
+}
+
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--flame);
+  outline-offset: 3px;
+}
+
+.name {
+  margin: 0;
+  font: 400 15px var(--display);
+  letter-spacing: 0.08em;
+  color: var(--dim);
+}
+
+h1 {
+  margin: 0;
+  font: 700 clamp(24px, 6.5vw, 32px) / 1.25 var(--display);
+  letter-spacing: 0.04em;
+  text-wrap: balance;
+  word-break: keep-all;
+}
+
+.lead {
+  margin: 0;
+  max-width: 34ch;
+  text-wrap: balance;
+  color: var(--dim);
+  word-break: keep-all;
+}
+
+.note {
+  margin: 0;
+  max-width: 34ch;
+  font-size: var(--text-small);
+  color: var(--flame);
+  word-break: keep-all;
+}

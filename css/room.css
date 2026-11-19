@@ -1,0 +1,146 @@
+/* 상담실: 대화창 */
+.room {
+  height: 100%;
+  height: 100dvh;
+  max-width: 640px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  padding: 12px 12px max(12px, env(safe-area-inset-bottom));
+  gap: 10px;
+}
+
+.room-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 12px;
+  min-height: var(--tap);
+  padding: 0 4px;
+}
+
+.room-head .who {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.room-head .lamp {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--flame);
+  box-shadow: 0 0 10px var(--flame);
+}
+
+.room-head button {
+  padding: 8px 16px;
+  font-size: 14px;
+}
+
+.conn {
+  margin: 0;
+  padding: 8px 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  font-size: var(--text-small);
+  color: var(--dim);
+  text-align: center;
+}
+
+.chat {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background:
+    radial-gradient(ellipse 70% 30% at 50% 0%, rgba(243, 178, 90, 0.1), transparent 70%),
+    var(--panel);
+  overflow: hidden;
+}
+
+.log {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px 14px;
+}
+
+.msg {
+  max-width: 84%;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.msg .by {
+  font-size: var(--text-small);
+  color: var(--dim);
+}
+
+.msg p {
+  margin: 0;
+  padding: 9px 13px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(236, 231, 219, 0.05);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* 상담사의 말은 명조로 */
+.msg.cn p {
+  font-family: var(--display);
+  font-weight: 400;
+}
+
+.msg.me {
+  align-self: flex-end;
+  align-items: flex-end;
+}
+
+.msg.me p {
+  background: rgba(243, 178, 90, 0.12);
+  border-color: rgba(243, 178, 90, 0.35);
+}
+
+.sys {
+  margin: 0;
+  align-self: center;
+  font-size: var(--text-small);
+  color: var(--dim);
+  text-align: center;
+}
+
+.chat-notice {
+  margin: 0;
+  padding: 6px 14px;
+  font-size: var(--text-small);
+  color: var(--flame);
+  text-align: center;
+}
+
+.composer {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  padding: 10px;
+  border-top: 1px solid var(--line);
+}
+
+.composer textarea {
+  flex: 1;
+  max-height: 120px;
+  resize: none;
+  field-sizing: content;
+}
+
+.composer button {
+  flex: none;
+}

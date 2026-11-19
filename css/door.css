@@ -1,20 +1,4 @@
-/* 문 화면: 닫힌 문과 안내 */
-* {
-  box-sizing: border-box;
-}
-
-html,
-body {
-  height: 100%;
-}
-
-body {
-  margin: 0;
-  background: var(--night);
-  color: var(--ink);
-  font: 300 var(--text) / 1.7 var(--body);
-}
-
+/* 문 화면: 문 그림과 안내, 상담사 로그인과 문 열기 */
 .door-screen {
   min-height: 100%;
   display: flex;
@@ -30,27 +14,51 @@ body {
   width: 132px;
   height: auto;
   margin-bottom: 12px;
+  overflow: visible;
 }
 
-.name {
-  margin: 0;
-  font: 400 15px var(--display);
-  letter-spacing: 0.08em;
-  color: var(--dim);
+.door .frame {
+  fill: #1a1426;
+  stroke: rgba(236, 231, 219, 0.25);
 }
 
-h1 {
-  margin: 0;
-  font: 700 clamp(26px, 7vw, 34px) / 1.25 var(--display);
-  letter-spacing: 0.04em;
-  text-wrap: balance;
+.door .leaf {
+  fill: #2a1d14;
+  stroke: rgba(0, 0, 0, 0.5);
 }
 
-.lead {
-  margin: 0;
-  max-width: 30ch;
-  color: var(--dim);
-  word-break: keep-all;
+.door .pane {
+  fill: #15121d;
+  transition: fill 1.2s ease;
+}
+
+.door .bars {
+  stroke: #2a1d14;
+  stroke-width: 2.5;
+}
+
+.door .knob {
+  fill: #8a6a2c;
+}
+
+.door .glow {
+  fill: var(--flame);
+  opacity: 0;
+  filter: blur(22px);
+  transition: opacity 1.2s ease;
+}
+
+/* 문이 열려 있으면 창에 불이 켜진다 */
+.door.lit .pane {
+  fill: var(--flame);
+}
+
+.door.lit .glow {
+  opacity: 0.4;
+}
+
+.door-screen button {
+  margin-top: 12px;
 }
 
 .help {
@@ -67,4 +75,55 @@ h1 {
   font-weight: 500;
   color: var(--ink);
   white-space: nowrap;
+}
+
+/* 상담사 화면 */
+.login {
+  width: min(320px, 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 8px;
+  text-align: left;
+}
+
+.login label {
+  font-size: var(--text-small);
+  color: var(--dim);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.invite {
+  width: min(460px, 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+  text-align: left;
+}
+
+.invite label {
+  font-size: var(--text-small);
+  color: var(--dim);
+}
+
+.invite input {
+  font-size: 14px;
+}
+
+.invite button {
+  align-self: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .door .pane,
+  .door .glow {
+    transition: none;
+  }
 }

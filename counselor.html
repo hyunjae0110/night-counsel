@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, interactive-widget=resizes-content">
+<meta name="theme-color" content="#07080f">
+<meta name="robots" content="noindex">
+<meta name="referrer" content="no-referrer">
+<title>밤의 작은 상담소 · present</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2307080f'/%3E%3Cpath d='M11 27V14a5 5 0 0 1 10 0v13z' fill='%232a1d14' stroke='%23ece7db' stroke-opacity='.3'/%3E%3Cpath d='M13.5 16a2.5 2.5 0 0 1 5 0v3h-5z' fill='%23f3b25a'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700&family=Noto+Sans+KR:wght@300;400;500&display=swap">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/door.css">
+<link rel="stylesheet" href="css/room.css">
+</head>
+<body>
+
+<!-- 로그인 -->
+<main id="login-view" class="door-screen" hidden>
+  <p class="name">밤의 작은 상담소</p>
+  <h1>present 로그인</h1>
+  <form id="login-form" class="login">
+    <label for="email">이메일</label>
+    <input id="email" type="email" autocomplete="username" required>
+    <label for="password">비밀번호</label>
+    <input id="password" type="password" autocomplete="current-password" required>
+    <button id="login" class="main" type="submit">로그인</button>
+  </form>
+  <p id="login-error" class="note" role="alert" hidden>이메일이나 비밀번호가 맞지 않아요.</p>
+</main>
+
+<!-- 상담사가 아닌 계정 -->
+<main id="denied-view" class="door-screen" hidden>
+  <p class="name">밤의 작은 상담소</p>
+  <h1>이 계정으로는 문을 열 수 없어요</h1>
+  <p class="lead">상담사로 등록된 계정이 아니에요. 로그아웃한 뒤 present 계정으로 다시 들어와 주세요.</p>
+  <button id="logout-denied" type="button">로그아웃</button>
+</main>
+
+<!-- 문 열기·닫기, 초대 링크 -->
+<main id="console-view" class="door-screen" hidden>
+  <svg id="door-svg" class="door" viewBox="0 0 120 150" aria-hidden="true">
+    <circle class="glow" cx="60" cy="88" r="44"/>
+    <path class="frame" d="M18 150V62a42 42 0 0 1 84 0v88z"/>
+    <path class="leaf" d="M36 150V72a24 24 0 0 1 48 0v78z"/>
+    <path class="pane" d="M47 82a13 13 0 0 1 26 0v18H47z"/>
+    <path class="bars" d="M60 69v31M47 90h26"/>
+    <circle class="knob" cx="76" cy="118" r="2.6"/>
+  </svg>
+  <p class="name">밤의 작은 상담소 · present</p>
+  <h1 id="console-title" aria-live="polite">확인하는 중이에요</h1>
+  <p id="console-lead" class="lead"></p>
+  <div id="invite-box" class="invite" hidden>
+    <label for="invite-link">초대 링크</label>
+    <input id="invite-link" type="text" readonly>
+    <button id="copy" class="main" type="button">링크 복사</button>
+  </div>
+  <div class="actions">
+    <button id="open-door" class="main" type="button" hidden>상담소 열기</button>
+    <button id="make-invite" class="main" type="button" hidden>초대 링크 만들기</button>
+    <button id="cancel-invite" type="button" hidden>초대 취소</button>
+    <button id="close-door" type="button" hidden>문 닫기</button>
+    <button id="logout" class="quiet" type="button">로그아웃</button>
+  </div>
+  <p id="notice" class="note" role="alert" hidden></p>
+</main>
+
+<!-- 상담실 -->
+<main id="room-view" class="room" hidden>
+  <header class="room-head">
+    <span class="who"><span class="lamp" aria-hidden="true"></span><span class="name">손님과 상담 중</span></span>
+    <button id="end" type="button">상담 마치기</button>
+  </header>
+  <p id="conn" class="conn" role="status" hidden>연결이 잠시 끊겼어요. 다시 잇는 중이에요.</p>
+  <section id="chat" class="chat" aria-label="대화"></section>
+</main>
+
+<noscript><p class="lead" style="margin:24px auto;text-align:center">이 페이지는 자바스크립트를 켜야 열려요.</p></noscript>
+<script type="module" src="js/counselor.js"></script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+# 데이터 규칙
+
+`database.rules.json`은 실시간 DB에서 누가 무엇을 읽고 쓸 수 있는지 정한다. 이 파일을 저장소에서 고치는 것만으로는 아무것도 바뀌지 않는다. Firebase 콘솔에 붙여 넣어야 실제로 적용된다.
+
+## 적용하는 방법
+
+1. Firebase 콘솔에서 Realtime Database로 간 뒤 **규칙(Rules)** 탭을 연다.
+2. 편집 칸의 내용을 모두 지우고 `database.rules.json`의 내용 전체를 붙여 넣는다.
+3. **게시(Publish)** 를 누른다.
+
+## 규칙이 지키는 것
+
+- 문 상태(`door`)는 누구나 읽고, 상담사만 바꾼다.
+- 방(`rooms/{방}`)은 상담사가 만들고 지운다. 초대 링크를 가진 한 사람만, 문이 열려 있을 때, 빈 방에 한 번 앉을 수 있다.
+- 대화는 상담사와 그 방에 앉은 손님만 읽고 쓴다. 보낸 글은 고치거나 지울 수 없고, 한 번에 1000자까지다.
+- 상담사는 규칙에 적힌 UID 하나뿐이다. 다른 계정은 로그인해도 손님과 같은 권한만 가진다.
+
+## 시험하는 방법
+
+규칙을 바꾸면 올리기 전에 시험한다. 진짜 DB가 아니라 내 컴퓨터의 에뮬레이터에서 돈다(Node.js와 Java가 필요하다).
+
+```
+npx firebase-tools emulators:start --only auth,database --project night-counsel
+node rules/test/rules-test.mjs
+```
+
+마지막 줄에 "모두 통과"가 나와야 한다.
