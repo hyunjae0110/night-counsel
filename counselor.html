@@ -67,15 +67,21 @@
     <button id="logout" class="quiet" type="button">로그아웃</button>
   </div>
   <p id="notice" class="note" role="alert" hidden></p>
+  <p id="done" class="lead" role="status" hidden></p>
 </main>
 
 <!-- 상담실 -->
 <main id="room-view" class="room" hidden>
   <header class="room-head">
     <span class="who"><span class="lamp" aria-hidden="true"></span><span class="name">손님과 상담 중</span></span>
-    <button id="end" type="button">상담 마치기</button>
+    <span class="side">
+      <span id="clock" class="clock" hidden></span>
+      <button id="end" type="button">상담 마치기</button>
+    </span>
+    <span id="clock-say" class="sr" role="status"></span>
   </header>
   <p id="conn" class="conn" role="status" hidden>연결이 잠시 끊겼어요. 다시 잇는 중이에요.</p>
+  <p id="peer" class="conn" role="status" hidden></p>
   <div class="room-body">
     <section id="table" class="table" aria-label="타로 탁자" hidden></section>
     <section id="chat" class="chat" aria-label="대화"></section>

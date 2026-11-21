@@ -37,6 +37,9 @@
             ".write": "auth != null && !data.exists() && newData.val() === auth.uid && root.child('rooms').child($room).child('meta').child('createdAt').exists() && root.child('door').child('open').val() === true",
             ".validate": "newData.isString() && newData.val().length <= 128"
           },
+          "startedAt": {
+            ".validate": "newData.isNumber() && (data.val() === newData.val() || newData.val() === now) && newData.parent().child('guest').exists()"
+          },
           "$other": {
             ".validate": false
           }
@@ -105,6 +108,19 @@
                 ".validate": false
               }
             }
+          },
+          "$other": {
+            ".validate": false
+          }
+        },
+        "presence": {
+          ".read": "auth != null && root.child('rooms').child($room).child('meta').child('guest').val() === auth.uid",
+          "g": {
+            ".write": "auth != null && root.child('rooms').child($room).child('meta').child('guest').val() === auth.uid && data.val() !== 'left' && newData.exists()",
+            ".validate": "(newData.val() === 'here' || newData.val() === 'away' || newData.val() === 'left') && newData.parent().parent().child('meta').child('guest').exists()"
+          },
+          "c": {
+            ".validate": "(newData.val() === 'here' || newData.val() === 'away') && newData.parent().parent().child('meta').child('createdAt').exists()"
           },
           "$other": {
             ".validate": false

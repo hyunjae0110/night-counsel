@@ -16,6 +16,7 @@ import {
 import { COPY } from './copy.js';
 import { mountChat } from './chat.js';
 import { mountTable } from './tarot.js';
+import { SESSION_MINUTES, AWAY_DELAY_MS, serverClock, mountClock, keepSeat } from './session.js';
 
 const { auth, db } = connect('guest');
 const $ = (id) => document.getElementById(id);
@@ -35,11 +36,29 @@ const state = {
   sitError: false,
   online: true,
   everOnline: false,
+  reading: false, // 이용 약속을 읽는 중
+  seatKnown: false, // 내가 먼저 나간 방인지 확인했다
+  left: false, // 내가 먼저 나갔다
+  peer: null, // present의 자리: null(아직 안 옴), 'here', 'away'
+  peerAwayAt: 0,
+  startedAt: null,
+  erasing: false, // 상담이 끝나 지워지는 연출을 보여 주는 중
+  confirmLeave: false,
+  leaveError: false,
 };
 
 let stopMessages = null;
 let stopTable = null;
+let stopSeats = null;
+let seat = null;
 let wasMine = false;
+let leaving = false; // 먼저 나가기를 눌러 서버의 확인을 기다리는 중
+let confirmTimer = 0;
+
+const serverNow = serverClock(db);
+const showClock = mountClock($('clock'), $('clock-say'));
+const calm = matchMedia('(prefers-reduced-motion: reduce)');
+const ERASE_MS = 2200;
 
 const chat = mountChat($('chat'), {
   me: 'g',
@@ -73,26 +92,111 @@ function startMessages() {
   );
 }
 
-function endSession() {
-  if (stopMessages) stopMessages();
-  if (stopTable) stopTable();
-  stopMessages = stopTable = null;
+function stopListening() {
+  for (const stop of [stopMessages, stopTable, stopSeats]) if (stop) stop();
+  stopMessages = stopTable = stopSeats = null;
+  if (seat) seat.stop();
+  seat = null;
+}
+
+function clearRoom() {
   chat.clear();
   table.reset();
+  state.startedAt = null;
+  state.peer = null;
+}
+
+// 두 사람의 자리를 지켜본다. 내가 먼저 나간 방이 아니면 대화를 잇고 내 자리를 지킨다.
+function watchSeats() {
+  if (stopSeats) return;
+  stopSeats = onValue(
+    ref(db, `rooms/${roomId}/presence`),
+    (snap) => {
+      const seats = snap.val() || {};
+      state.seatKnown = true;
+      state.left = seats.g === 'left';
+      const peer = seats.c || null;
+      if (peer === 'away' && state.peer !== 'away') {
+        state.peerAwayAt = Date.now();
+        setTimeout(render, AWAY_DELAY_MS);
+      }
+      state.peer = peer;
+      if (!state.left && !leaving) {
+        startMessages();
+        if (!seat) {
+          seat = keepSeat(db, roomId, 'g');
+          render();
+          chat.focus();
+          return;
+        }
+      }
+      render();
+    },
+    () => {
+      // 자리 표시를 읽지 못해도(규칙이 아직 옛것일 때) 상담은 이어 간다. 방이 지워진 경우는 방 상태 감시가 맡는다.
+      if (state.room !== 'mine' || state.seatKnown) return;
+      state.seatKnown = true;
+      state.peer = 'here';
+      startMessages();
+      render();
+    }
+  );
+}
+
+// 상담이 끝났다: 대화와 카드가 지워지는 모습을 잠깐 보여 주고 마침 인사로 넘어간다.
+function finish() {
+  const wasInRoom = state.room === 'mine' && state.seatKnown && !state.left;
+  stopListening();
+  state.room = 'ended';
+  if (!wasInRoom || calm.matches) {
+    clearRoom();
+    return;
+  }
+  state.erasing = true;
+  setTimeout(() => {
+    state.erasing = false;
+    clearRoom();
+    render();
+  }, ERASE_MS);
+}
+
+function renderRoom() {
+  $('room-view').classList.toggle('erasing', state.erasing);
+  $('conn').hidden = state.erasing || state.online || !state.everOnline;
+  $('leave').hidden = state.erasing;
+  $('leave').textContent = state.confirmLeave ? COPY.session.leaveConfirm : COPY.session.leave;
+
+  const peer = $('peer');
+  let text = '';
+  if (state.erasing) text = COPY.session.erasing;
+  else if (state.leaveError) text = COPY.session.leaveFailed;
+  else if (!state.peer) text = COPY.session.g.waiting;
+  else if (state.peer === 'away' && Date.now() - state.peerAwayAt >= AWAY_DELAY_MS - 100)
+    text = COPY.session.g.away;
+  peer.hidden = !text;
+  peer.textContent = text;
+
+  // 좁은 화면에서 단추가 다음 줄로 밀리지 않도록, 나가기를 확인하는 동안에는 남은 시간을 잠시 숨긴다.
+  showClock(state.erasing || state.confirmLeave ? null : state.startedAt, serverNow());
 }
 
 function render() {
-  const inRoom = state.room === 'mine';
+  const inRoom = state.erasing || (state.room === 'mine' && state.seatKnown && !state.left);
+  const reading = !inRoom && state.reading && state.room === 'invited' && state.door === true;
   $('room-view').hidden = !inRoom;
-  $('door-view').hidden = inRoom;
-  if (inRoom) {
-    $('conn').hidden = state.online || !state.everOnline;
+  $('promise-view').hidden = !reading;
+  $('door-view').hidden = inRoom || reading;
+  if (inRoom) return renderRoom();
+  if (reading) {
+    $('sit').disabled = !$('agree').checked;
+    $('sit-note').hidden = !state.sitError;
     return;
   }
 
   let key;
   if (state.failed) key = 'failed';
   else if (state.room === 'ended') key = 'ended';
+  else if (state.room === 'mine') key = state.left ? 'left' : 'checking';
   else if (state.door === null) key = 'loading';
   else if (state.door === false) key = 'closed';
   else if (state.room === 'none') key = 'open';
@@ -108,22 +212,82 @@ function render() {
   const action = $('door-action');
   action.hidden = !text.action;
   if (text.action) action.textContent = text.action;
-
-  const note = $('door-note');
-  note.hidden = !(state.sitError && key === 'invited');
-  note.textContent = COPY.door.sitFailed;
 }
 
-$('door-action').addEventListener('click', async () => {
-  if (state.room !== 'invited' || !state.uid) return;
-  $('door-action').disabled = true;
+// 이용 약속 화면의 글자를 채운다.
+(function fillPromise() {
+  const P = COPY.promise;
+  $('promise-title').textContent = P.title;
+  $('promise-list').replaceChildren(
+    ...P.items.map((item) => {
+      const li = document.createElement('li');
+      li.textContent = typeof item === 'function' ? item(SESSION_MINUTES) : item;
+      return li;
+    })
+  );
+  $('agree-text').textContent = P.agree;
+  $('sit').textContent = P.sit;
+  $('promise-back').textContent = P.back;
+  $('sit-note').textContent = COPY.door.sitFailed;
+})();
+
+// 문 앞에서 약속 화면으로, 약속 화면에서 자리로.
+$('door-action').addEventListener('click', () => {
+  if (state.room !== 'invited') return;
+  state.reading = true;
+  render();
+  $('promise-title').focus();
+});
+
+$('promise-back').addEventListener('click', () => {
+  state.reading = false;
+  render();
+});
+
+$('agree').addEventListener('change', render);
+
+// 약속을 읽었다는 확인은 이 화면에서만 쓰고 어디에도 저장하지 않는다.
+$('sit').addEventListener('click', async () => {
+  if (state.room !== 'invited' || !state.uid || !$('agree').checked) return;
+  $('sit').disabled = true;
   state.sitError = false;
   try {
     await set(ref(db, `rooms/${roomId}/meta/guest`), state.uid);
   } catch (err) {
     state.sitError = true;
   }
-  $('door-action').disabled = false;
+  render();
+});
+
+// 먼저 나가기: 두 번 눌러야 나간다. 대화는 present가 상담을 마칠 때 지워진다.
+$('leave').addEventListener('click', async () => {
+  if (!seat) return;
+  if (!state.confirmLeave) {
+    state.confirmLeave = true;
+    clearTimeout(confirmTimer);
+    confirmTimer = setTimeout(() => {
+      state.confirmLeave = false;
+      render();
+    }, 4000);
+    return render();
+  }
+  clearTimeout(confirmTimer);
+  state.confirmLeave = false;
+  state.leaveError = false;
+  const mine = seat;
+  seat = null;
+  leaving = true;
+  try {
+    await mine.leave();
+    for (const stop of [stopMessages, stopTable]) if (stop) stop();
+    stopMessages = stopTable = null;
+    state.left = true;
+    clearRoom();
+  } catch (err) {
+    state.leaveError = true;
+    seat = keepSeat(db, roomId, 'g');
+  }
+  leaving = false;
   render();
 });
 
@@ -153,28 +317,34 @@ function watchRoom() {
       const meta = snap.val();
       if (!meta) {
         // 방이 없다: 내가 앉아 있었다면 상담이 끝난 것이고, 아니면 쓸 수 없는 링크다.
-        if (wasMine) endSession();
-        state.room = wasMine ? 'ended' : 'invalid';
+        if (wasMine) finish();
+        else state.room = 'invalid';
       } else if (meta.guest === state.uid) {
         wasMine = true;
         state.room = 'mine';
-        startMessages();
+        state.reading = false;
+        state.startedAt = typeof meta.startedAt === 'number' ? meta.startedAt : null;
+        watchSeats();
       } else if (!meta.guest) {
         state.room = 'invited';
       } else {
         state.room = 'invalid';
       }
       render();
-      if (state.room === 'mine') chat.focus();
     },
     () => {
       // 읽기가 거절됐다: 다른 사람이 이미 앉은 방이다.
-      if (wasMine) endSession();
-      state.room = wasMine ? 'ended' : 'invalid';
+      if (wasMine) finish();
+      else state.room = 'invalid';
       render();
     }
   );
 }
+
+// 남은 시간은 분 단위로만 보이므로 가끔만 다시 그린다.
+setInterval(() => {
+  if (!$('room-view').hidden) renderRoom();
+}, 10000);
 
 let watching = false;
 onAuthStateChanged(auth, (user) => {

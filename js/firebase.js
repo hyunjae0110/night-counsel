@@ -28,6 +28,7 @@ export {
   query,
   limitToLast,
   serverTimestamp,
+  onDisconnect,
 } from 'https://www.gstatic.com/firebasejs/13.2.0/firebase-database.js';
 
 const firebaseConfig = {

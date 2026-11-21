@@ -33,7 +33,18 @@
   <h1 id="door-title">문을 살피는 중이에요</h1>
   <p id="door-lead" class="lead">잠시만 기다려 주세요.</p>
   <button id="door-action" class="main" type="button" hidden></button>
-  <p id="door-note" class="note" hidden></p>
+  <p class="help">지금 많이 힘들다면 기다리지 말고 연락하세요. 자살예방상담전화 <strong>109</strong>, 청소년상담전화 <strong>1388</strong>, 긴급 신고 <strong>119 · 112</strong></p>
+</main>
+
+<!-- 이용 약속. 문구는 js/copy.js에서 채운다. -->
+<main id="promise-view" class="door-screen promise-screen" hidden>
+  <p class="name">밤의 작은 상담소</p>
+  <h1 id="promise-title" tabindex="-1"></h1>
+  <ol id="promise-list" class="promise"></ol>
+  <label class="agree"><input id="agree" type="checkbox"><span id="agree-text"></span></label>
+  <button id="sit" class="main" type="button" disabled></button>
+  <p id="sit-note" class="note" role="alert" hidden></p>
+  <button id="promise-back" class="quiet" type="button"></button>
   <p class="help">지금 많이 힘들다면 기다리지 말고 연락하세요. 자살예방상담전화 <strong>109</strong>, 청소년상담전화 <strong>1388</strong>, 긴급 신고 <strong>119 · 112</strong></p>
 </main>
 
@@ -41,8 +52,14 @@
 <main id="room-view" class="room" hidden>
   <header class="room-head">
     <span class="who"><span class="lamp" aria-hidden="true"></span><span class="name">밤의 작은 상담소</span></span>
+    <span class="side">
+      <span id="clock" class="clock" hidden></span>
+      <button id="leave" class="quiet" type="button">나가기</button>
+    </span>
+    <span id="clock-say" class="sr" role="status"></span>
   </header>
   <p id="conn" class="conn" role="status" hidden>연결이 잠시 끊겼어요. 다시 잇는 중이에요.</p>
+  <p id="peer" class="conn" role="status" hidden></p>
   <div class="room-body">
     <section id="table" class="table" aria-label="타로 탁자" hidden></section>
     <section id="chat" class="chat" aria-label="대화"></section>
