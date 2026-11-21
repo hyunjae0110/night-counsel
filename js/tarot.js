@@ -97,6 +97,7 @@ export function mountTable(root, { role, onPick, onReveal, onShuffle, onSpread }
   // 카드 크게 보기: 펼친 카드를 누르면 화면 가운데에 크게 보인다. 누른 사람의 화면에서만 열린다.
   const zoom = document.createElement('dialog');
   zoom.className = 'zoom';
+  zoom.setAttribute('aria-label', T.zoomLabel);
   const zoomBody = el('div', 'zoom-body');
   const zoomClose = el('button', 'quiet', T.zoomClose);
   zoomClose.type = 'button';
