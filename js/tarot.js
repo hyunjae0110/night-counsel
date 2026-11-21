@@ -139,7 +139,7 @@ export function mountTable(root, { role, onPick, onReveal, onShuffle, onSpread }
       const pic = document.createElement('img');
       pic.className = 'pic';
       pic.alt = '';
-      pic.src = `assets/cards/${String(reveal.card).padStart(2, '0')}.svg?v=${ART_VERSION}`;
+      pic.src = `assets/cards/${String(reveal.card).padStart(2, '0')}.webp?v=${ART_VERSION}`;
       pic.addEventListener('error', () => {
         pic.remove();
         face.classList.remove('art');
