@@ -2,48 +2,117 @@
   "rules": {
     ".read": false,
     ".write": false,
-
     "door": {
       ".read": true,
       ".write": "auth != null && auth.uid === 'hBYrocbv0LdQf9NfE7M6bZOVjYI2'",
-      "open": { ".validate": "newData.isBoolean()" },
-      "changedAt": { ".validate": "newData.isNumber()" },
-      "$other": { ".validate": false }
+      "open": {
+        ".validate": "newData.isBoolean()"
+      },
+      "changedAt": {
+        ".validate": "newData.isNumber()"
+      },
+      "$other": {
+        ".validate": false
+      }
     },
-
     "private": {
       ".read": "auth != null && auth.uid === 'hBYrocbv0LdQf9NfE7M6bZOVjYI2'",
-      ".write": "auth != null && auth.uid === 'hBYrocbv0LdQf9NfE7M6bZOVjYI2'"
+      ".write": "auth != null && auth.uid === 'hBYrocbv0LdQf9NfE7M6bZOVjYI2'",
+      "$room": {
+        "deck": {
+          ".validate": "newData.hasChildren(['order', 'reversed']) && !newData.parent().parent().parent().child('rooms').child($room).child('table').child('picks').exists()"
+        }
+      }
     },
-
     "rooms": {
       ".read": "auth != null && auth.uid === 'hBYrocbv0LdQf9NfE7M6bZOVjYI2'",
       ".write": "auth != null && auth.uid === 'hBYrocbv0LdQf9NfE7M6bZOVjYI2'",
-
       "$room": {
         "meta": {
           ".read": "auth != null && (!data.child('guest').exists() || data.child('guest').val() === auth.uid)",
-          "createdAt": { ".validate": "newData.isNumber()" },
+          "createdAt": {
+            ".validate": "newData.isNumber()"
+          },
           "guest": {
             ".write": "auth != null && !data.exists() && newData.val() === auth.uid && root.child('rooms').child($room).child('meta').child('createdAt').exists() && root.child('door').child('open').val() === true",
             ".validate": "newData.isString() && newData.val().length <= 128"
           },
-          "$other": { ".validate": false }
+          "$other": {
+            ".validate": false
+          }
         },
-
         "messages": {
           ".read": "auth != null && root.child('rooms').child($room).child('meta').child('guest').val() === auth.uid",
           "$message": {
-            ".write": "auth != null && !data.exists() && newData.exists() && root.child('rooms').child($room).child('meta').child('guest').val() === auth.uid && newData.child('from').val() === 'g'",
-            ".validate": "newData.hasChildren(['from', 'text', 'at'])",
-            "from": { ".validate": "newData.val() === 'c' || newData.val() === 'g'" },
-            "text": { ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 1000" },
-            "at": { ".validate": "newData.val() === now" },
-            "$other": { ".validate": false }
+            ".write": "auth != null && root.child('rooms').child($room).child('meta').child('guest').val() === auth.uid && !data.exists() && newData.exists() && newData.child('from').val() === 'g'",
+            ".validate": "newData.hasChildren(['from', 'at']) && ((newData.child('text').exists() && !newData.child('card').exists()) || (!newData.child('text').exists() && newData.hasChildren(['card', 'reversed', 'label']) && newData.child('from').val() === 'c'))",
+            "from": {
+              ".validate": "newData.val() === 'c' || newData.val() === 'g'"
+            },
+            "text": {
+              ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 1000"
+            },
+            "at": {
+              ".validate": "newData.val() === now"
+            },
+            "card": {
+              ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 77"
+            },
+            "reversed": {
+              ".validate": "newData.isBoolean()"
+            },
+            "label": {
+              ".validate": "newData.isString() && newData.val().length <= 20"
+            },
+            "$other": {
+              ".validate": false
+            }
           }
         },
-
-        "$other": { ".validate": false }
+        "table": {
+          ".read": "auth != null && root.child('rooms').child($room).child('meta').child('guest').val() === auth.uid",
+          "spread": {
+            ".validate": "(newData.val() === 1 || newData.val() === 3) && (data.val() === newData.val() || !newData.parent().child('picks').exists())"
+          },
+          "deal": {
+            ".validate": "newData.isNumber()"
+          },
+          "dealtAt": {
+            ".validate": "newData.isNumber()"
+          },
+          "picks": {
+            "$slot": {
+              ".write": "auth != null && root.child('rooms').child($room).child('meta').child('guest').val() === auth.uid && !data.exists() && newData.exists()",
+              ".validate": "!data.exists() && auth.uid === root.child('rooms').child($room).child('meta').child('guest').val() && newData.isString() && newData.val().matches(/^([0-9]|[1-6][0-9]|7[0-7])$/) && newData.parent().parent().child('deal').exists() && ($slot === '0' || (newData.parent().parent().child('spread').val() === 3 && (($slot === '1' && newData.parent().child('0').exists()) || ($slot === '2' && newData.parent().child('1').exists())))) && newData.parent().parent().child('taken').child(newData.val()).val() === $slot"
+            }
+          },
+          "taken": {
+            "$pos": {
+              ".write": "auth != null && root.child('rooms').child($room).child('meta').child('guest').val() === auth.uid && !data.exists() && newData.exists()",
+              ".validate": "!data.exists() && newData.isString() && newData.parent().parent().child('picks').child(newData.val()).val() === $pos"
+            }
+          },
+          "reveals": {
+            "$slot": {
+              ".validate": "!data.exists() && newData.hasChildren(['card', 'reversed']) && root.child('rooms').child($room).child('table').child('picks').child($slot).exists() && newData.child('card').val() === root.child('private').child($room).child('deck').child('order').child(root.child('rooms').child($room).child('table').child('picks').child($slot).val()).val() && newData.child('reversed').val() === root.child('private').child($room).child('deck').child('reversed').child(root.child('rooms').child($room).child('table').child('picks').child($slot).val()).val()",
+              "card": {
+                ".validate": "newData.isNumber()"
+              },
+              "reversed": {
+                ".validate": "newData.isBoolean()"
+              },
+              "$other": {
+                ".validate": false
+              }
+            }
+          },
+          "$other": {
+            ".validate": false
+          }
+        },
+        "$other": {
+          ".validate": false
+        }
       }
     }
   }

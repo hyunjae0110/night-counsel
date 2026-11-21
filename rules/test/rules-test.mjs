@@ -145,10 +145,75 @@ denied('손님은 대화를 통째로 지울 수 없다', await db('DELETE', `ro
 denied('손님은 방을 지울 수 없다', await db('DELETE', `rooms/${ROOM}`, G));
 denied('방에 다른 항목을 넣을 수 없다', await db('PUT', `rooms/${ROOM}/extra`, P, { a: 1 }));
 
+// --- 타로 ---
+const order = Array.from({ length: 78 }, (_, i) => 77 - i); // 위치 p에는 카드 77 - p가 있다
+const reversed = order.map((_, i) => i % 2 === 0);
+const TABLE = `rooms/${ROOM}/table`;
+const pick = (who, slot, pos) =>
+  db('PATCH', TABLE, who, { [`picks/${slot}`]: String(pos), [`taken/${pos}`]: String(slot) });
+const shuffle = (deal, spread = 3, deck = { order, reversed }) =>
+  db('PATCH', '', P, {
+    [`private/${ROOM}/deck`]: deck,
+    [`rooms/${ROOM}/table`]: { spread, deal, dealtAt: NOW },
+  });
+
+denied('섞기 전에는 손님이 카드를 고를 수 없다', await pick(G, 0, 5));
+denied('손님은 카드를 섞을 수 없다', await db('PUT', TABLE, G, { spread: 3, deal: 1, dealtAt: NOW }));
+allowed('상담사는 카드를 섞을 수 있다', await shuffle(1));
+denied('손님은 섞인 순서를 읽을 수 없다', await db('GET', `private/${ROOM}/deck`, G));
+denied('다른 사람은 섞인 순서를 읽을 수 없다', await db('GET', `private/${ROOM}/deck`, S));
+denied('새로 가입한 이메일 계정은 섞인 순서를 읽을 수 없다', await db('GET', `private/${ROOM}/deck`, I));
+denied('다른 사람은 탁자를 읽을 수 없다', await db('GET', TABLE, S));
+const seenByGuest = await db('GET', TABLE, G);
+allowed('손님은 탁자를 읽을 수 있다', seenByGuest);
+check(
+  '섞은 직후 손님이 읽는 탁자에는 카드의 정체가 없다',
+  { ok: JSON.stringify(Object.keys(seenByGuest.body || {}).sort()) === '["deal","dealtAt","spread"]', status: 0 },
+  true
+);
+denied('다른 사람은 카드를 고를 수 없다', await pick(S, 0, 5));
+denied('상담사도 손님 대신 카드를 고를 수 없다', await pick(P, 0, 5));
+denied('둘째 자리부터 고를 수 없다', await pick(G, 1, 5));
+denied('덱 밖의 위치는 고를 수 없다', await pick(G, 0, 78));
+denied('고른 표시 없이 자리만 채울 수 없다', await db('PUT', `${TABLE}/picks/0`, G, '5'));
+denied('자리와 고른 표시가 어긋나면 안 된다', await db('PATCH', TABLE, G, { 'picks/0': '5', 'taken/6': '0' }));
+allowed('손님은 첫 카드를 고를 수 있다', await pick(G, 0, 5));
+denied('고른 자리를 다른 카드로 바꿀 수 없다', await pick(G, 0, 6));
+denied('같은 카드를 두 번 고를 수 없다', await pick(G, 1, 5));
+denied('자리를 건너뛰어 고를 수 없다', await pick(G, 2, 9));
+denied('손님은 고른 카드를 무를 수 없다', await db('DELETE', `${TABLE}/picks/0`, G));
+const afterPick = await db('GET', TABLE, G);
+check(
+  '고른 뒤에도 손님이 읽는 탁자에는 카드의 정체가 없다',
+  { ok: !JSON.stringify(afterPick.body).includes('card') && !('reveals' in (afterPick.body || {})), status: 0 },
+  true
+);
+denied('손님은 카드를 펼칠 수 없다', await db('PUT', `${TABLE}/reveals/0`, G, { card: order[5], reversed: reversed[5] }));
+denied('상담사도 덱과 다른 카드로 펼칠 수 없다', await db('PUT', `${TABLE}/reveals/0`, P, { card: 3, reversed: reversed[5] }));
+denied('상담사도 방향을 바꿔 펼칠 수 없다', await db('PUT', `${TABLE}/reveals/0`, P, { card: order[5], reversed: !reversed[5] }));
+denied('고르지 않은 자리는 펼칠 수 없다', await db('PUT', `${TABLE}/reveals/1`, P, { card: order[6], reversed: reversed[6] }));
+denied('손님이 고른 뒤에는 상담사도 덱을 바꿀 수 없다', await db('PUT', `private/${ROOM}/deck`, P, { order: [...order].reverse(), reversed }));
+denied('손님이 고른 뒤에는 덱의 한 장만 바꿀 수도 없다', await db('PUT', `private/${ROOM}/deck/order/5`, P, 3));
+denied('손님이 고른 뒤에는 스프레드를 바꿀 수 없다', await db('PUT', `${TABLE}/spread`, P, 1));
+allowed('상담사는 고른 카드를 그대로 펼칠 수 있다', await db('PUT', `${TABLE}/reveals/0`, P, { card: order[5], reversed: reversed[5] }));
+denied('펼친 카드를 다른 카드로 바꿀 수 없다', await db('PUT', `${TABLE}/reveals/0`, P, { card: 3, reversed: false }));
+allowed('손님은 둘째 카드를 고를 수 있다', await pick(G, 1, 40));
+allowed('상담사는 대화에 카드 기록을 남길 수 있다', await db('POST', `rooms/${ROOM}/messages`, P, { from: 'c', card: order[5], reversed: reversed[5], label: '지나온 것', at: NOW }));
+denied('손님은 카드 기록을 남길 수 없다', await db('POST', `rooms/${ROOM}/messages`, G, { from: 'g', card: 1, reversed: false, label: '지금', at: NOW }));
+denied('글과 카드 기록을 한 메시지에 섞을 수 없다', await db('POST', `rooms/${ROOM}/messages`, G, { from: 'g', text: 'x', card: 1, reversed: false, label: '지금', at: NOW }));
+allowed('상담사는 다시 섞을 수 있다', await shuffle(2, 1));
+const reshuffled = await db('GET', TABLE, 'owner');
+check('다시 섞으면 고른 카드와 펼친 카드가 사라진다', { ok: !reshuffled.body.picks && !reshuffled.body.reveals && !reshuffled.body.taken, status: 0 }, true);
+allowed('고르기 전에는 스프레드를 바꿀 수 있다', await db('PUT', `${TABLE}/spread`, P, 3));
+allowed('스프레드를 한 장으로 바꿀 수 있다', await db('PUT', `${TABLE}/spread`, P, 1));
+allowed('한 장 스프레드에서 한 장을 고를 수 있다', await pick(G, 0, 12));
+denied('한 장 스프레드에서 둘째 장은 고를 수 없다', await pick(G, 1, 13));
+
 // --- 상담을 마친다 ---
-allowed('상담사는 방을 지울 수 있다', await db('DELETE', `rooms/${ROOM}`, P));
+allowed('상담사는 방과 덱을 함께 지울 수 있다', await db('PATCH', '', P, { [`rooms/${ROOM}`]: null, [`private/${ROOM}`]: null, 'private/current': null }));
 const after = await db('GET', `rooms/${ROOM}`, 'owner');
-check('마친 뒤에는 그 방의 데이터가 남지 않는다', { ok: after.body === null, status: after.status }, true);
+const afterDeck = await db('GET', `private/${ROOM}`, 'owner');
+check('마친 뒤에는 그 방의 대화와 카드, 섞인 순서가 남지 않는다', { ok: after.body === null && afterDeck.body === null, status: after.status }, true);
 denied('마친 뒤에는 손님이 대화를 읽을 수 없다', await db('GET', `rooms/${ROOM}/messages`, G));
 denied('마친 뒤에는 손님이 글을 쓸 수 없다', await db('POST', `rooms/${ROOM}/messages`, G, msg('g')));
 denied('마친 방에는 다시 앉을 수 없다', await db('PUT', `rooms/${ROOM}/meta/guest`, G, guest.localId));
