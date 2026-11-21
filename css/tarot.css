@@ -146,6 +146,30 @@ button.card.back:hover:not(:disabled) {
   word-break: keep-all;
 }
 
+/* 그림이 있는 카드: 위에 번호, 가운데 그림, 아래 이름 */
+.card.front.art {
+  gap: 2px;
+  padding: 5px 5px 6px;
+}
+
+.card.front.art .mark {
+  font-size: 10px;
+  line-height: 1.2;
+}
+
+.card.front.art .pic {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  object-fit: contain;
+}
+
+.card.front.art .nm {
+  margin-block: 0;
+  font-size: clamp(10px, 2.9vw, 13px);
+  line-height: 1.2;
+}
+
 .card.front.rv {
   transform: rotate(180deg);
 }
