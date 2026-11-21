@@ -171,7 +171,7 @@ function render() {
   const open = state.door === true;
   const waiting = open && !!state.roomId;
 
-  $('door-svg').classList.toggle('lit', open);
+  $('door-pic').classList.toggle('lit', open);
   $('console-title').textContent = checking
     ? T.checking
     : !open

@@ -28,34 +28,30 @@
 <script type="importmap">
 {
   "imports": {
-    "./js/cards.js": "./js/cards.js?v=4",
-    "./js/chat.js": "./js/chat.js?v=4",
-    "./js/copy.js": "./js/copy.js?v=4",
-    "./js/firebase.js": "./js/firebase.js?v=4",
-    "./js/session.js": "./js/session.js?v=4",
-    "./js/sound.js": "./js/sound.js?v=4",
-    "./js/tarot.js": "./js/tarot.js?v=4"
+    "./js/cards.js": "./js/cards.js?v=5",
+    "./js/chat.js": "./js/chat.js?v=5",
+    "./js/copy.js": "./js/copy.js?v=5",
+    "./js/firebase.js": "./js/firebase.js?v=5",
+    "./js/session.js": "./js/session.js?v=5",
+    "./js/sound.js": "./js/sound.js?v=5",
+    "./js/tarot.js": "./js/tarot.js?v=5"
   }
 }
 </script>
-<link rel="stylesheet" href="css/tokens.css?v=4">
-<link rel="stylesheet" href="css/base.css?v=4">
-<link rel="stylesheet" href="css/door.css?v=4">
-<link rel="stylesheet" href="css/room.css?v=4">
-<link rel="stylesheet" href="css/tarot.css?v=4">
+<link rel="stylesheet" href="css/tokens.css?v=5">
+<link rel="stylesheet" href="css/base.css?v=5">
+<link rel="stylesheet" href="css/door.css?v=5">
+<link rel="stylesheet" href="css/room.css?v=5">
+<link rel="stylesheet" href="css/tarot.css?v=5">
 </head>
 <body>
 
 <!-- 문 화면. 아래 문구는 화면이 뜨는 동안만 보이고, 곧 js/copy.js의 문구로 바뀐다. -->
 <main id="door-view" class="door-screen">
-  <svg id="door-svg" class="door" viewBox="0 0 120 150" aria-hidden="true">
-    <circle class="glow" cx="60" cy="88" r="44"/>
-    <path class="frame" d="M18 150V62a42 42 0 0 1 84 0v88z"/>
-    <path class="leaf" d="M36 150V72a24 24 0 0 1 48 0v78z"/>
-    <path class="pane" d="M47 82a13 13 0 0 1 26 0v18H47z"/>
-    <path class="bars" d="M60 69v31M47 90h26"/>
-    <circle class="knob" cx="76" cy="118" r="2.6"/>
-  </svg>
+  <div id="door-pic" class="door-pic" aria-hidden="true">
+    <img class="off" src="assets/door-off.jpg?v=5" alt="" width="640" height="640">
+    <img class="on" src="assets/door-on.jpg?v=5" alt="" width="640" height="640">
+  </div>
   <p class="name">밤의 작은 상담소</p>
   <h1 id="door-title">문을 살피는 중이에요</h1>
   <p id="door-lead" class="lead">잠시만 기다려 주세요.</p>
@@ -96,6 +92,6 @@
 </main>
 
 <noscript><p class="lead" style="margin:24px auto;text-align:center">이 페이지는 자바스크립트를 켜야 열려요.</p></noscript>
-<script type="module" src="js/guest.js?v=4"></script>
+<script type="module" src="js/guest.js?v=5"></script>
 </body>
 </html>

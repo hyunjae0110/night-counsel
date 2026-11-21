@@ -220,7 +220,7 @@ function render() {
   const text = (state.room === 'none' && COPY.landing.door[key]) || COPY.door[key];
   $('door-title').textContent = text.title;
   $('door-lead').textContent = text.lead;
-  $('door-svg').classList.toggle('lit', state.door === true && key !== 'failed');
+  $('door-pic').classList.toggle('lit', state.door === true && key !== 'failed');
 
   const action = $('door-action');
   action.hidden = !text.action;
