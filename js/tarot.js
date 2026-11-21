@@ -1,7 +1,7 @@
 // 타로 탁자: 손님 화면과 상담사 화면이 함께 쓴다.
 // 상담사가 섞고, 손님이 고르고, 상담사가 펼친다.
 // 이 화면은 DB의 rooms/{방}/table을 그대로 그릴 뿐이고, 권한은 데이터 규칙이 지킨다.
-import { CARDS, DECK_SIZE, SPREADS, ART_CARDS } from './cards.js';
+import { CARDS, DECK_SIZE, SPREADS, ART_CARDS, ART_VERSION } from './cards.js';
 import { COPY } from './copy.js';
 
 const T = COPY.tarot;
@@ -139,7 +139,7 @@ export function mountTable(root, { role, onPick, onReveal, onShuffle, onSpread }
       const pic = document.createElement('img');
       pic.className = 'pic';
       pic.alt = '';
-      pic.src = `assets/cards/${String(reveal.card).padStart(2, '0')}.svg`;
+      pic.src = `assets/cards/${String(reveal.card).padStart(2, '0')}.svg?v=${ART_VERSION}`;
       pic.addEventListener('error', () => {
         pic.remove();
         face.classList.remove('art');
