@@ -144,6 +144,8 @@ export const COPY = {
     reshuffle: '다시 섞기',
     choose: '이 카드 고르기',
     revealLabel: '카드 펼치기',
+    zoomOpen: '크게 보기',
+    zoomClose: '닫기',
     upright: '정방향',
     reversed: '역방향',
     fanLabel: '덱에서 카드 고르기',
