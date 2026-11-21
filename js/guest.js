@@ -216,7 +216,8 @@ function render() {
   else if (state.room === 'invited') key = 'invited';
   else key = 'invalid';
 
-  const text = COPY.door[key];
+  // 초대 링크 없이 온 사람에게는 안내 화면의 말투(합니다체)로 문 상태를 알린다.
+  const text = (state.room === 'none' && COPY.landing.door[key]) || COPY.door[key];
   $('door-title').textContent = text.title;
   $('door-lead').textContent = text.lead;
   $('door-svg').classList.toggle('lit', state.door === true && key !== 'failed');
