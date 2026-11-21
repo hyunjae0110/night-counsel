@@ -368,3 +368,15 @@
   display: flex;
   gap: 8px;
 }
+
+/* 상담실에 들어왔을 때 맨 위에 보이는 안내 */
+.notice-card.intro ul {
+  margin: 0;
+  padding: 0 0 0 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+  color: var(--dim);
+  word-break: keep-all;
+}

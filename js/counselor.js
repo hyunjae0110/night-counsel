@@ -224,7 +224,10 @@ function watchRoom(id) {
     const meta = snap.val() || {};
     const seated = !!meta.guest;
     const first = seated && !state.guest;
-    if (first) chat.system(COPY.chat.seated);
+    if (first) {
+      chat.system(COPY.chat.seated);
+      chat.intro(); // 손님이 본 안내를 present도 같은 자리에서 본다.
+    }
     state.guest = seated;
     state.startedAt = typeof meta.startedAt === 'number' ? meta.startedAt : null;
     // 손님이 앉은 것을 present가 처음 본 때가 상담의 시작이다. 남은 시간은 여기서부터 센다.

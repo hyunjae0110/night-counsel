@@ -89,6 +89,7 @@ function startMessages() {
   if (stopMessages) return;
   chat.clear();
   chat.system(COPY.chat.seated);
+  chat.intro();
   typing = keepTyping(db, roomId, 'g', (on) => chat.peerTyping(on));
   stopTable = onValue(
     ref(db, `rooms/${roomId}/table`),
