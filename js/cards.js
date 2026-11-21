@@ -108,6 +108,10 @@ export const CARDS = [
 
 export const DECK_SIZE = CARDS.length; // 78
 
+// 그림이 있는 카드의 수. 0번부터 이 수만큼은 assets/cards/번호.svg 그림으로 보이고,
+// 나머지는 번호와 이름만 있는 임시 모양으로 보인다. 지금은 메이저 22장.
+export const ART_CARDS = 22;
+
 // 스프레드: 카드 수마다 자리의 이름
 export const SPREADS = {
   1: ['지금 마음'],

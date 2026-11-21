@@ -1,7 +1,7 @@
 // 타로 탁자: 손님 화면과 상담사 화면이 함께 쓴다.
 // 상담사가 섞고, 손님이 고르고, 상담사가 펼친다.
 // 이 화면은 DB의 rooms/{방}/table을 그대로 그릴 뿐이고, 권한은 데이터 규칙이 지킨다.
-import { CARDS, DECK_SIZE, SPREADS } from './cards.js';
+import { CARDS, DECK_SIZE, SPREADS, ART_CARDS } from './cards.js';
 import { COPY } from './copy.js';
 
 const T = COPY.tarot;
@@ -99,7 +99,23 @@ export function mountTable(root, { role, onPick, onReveal, onShuffle, onSpread }
     const face = el('div', `card front${reveal.reversed ? ' rv' : ''}${isNew && !reduceMotion ? ' new' : ''}`);
     face.setAttribute('role', 'img');
     face.setAttribute('aria-label', `${card.name} ${reveal.reversed ? T.reversed : T.upright}`);
-    face.append(el('span', 'mark', card.mark), el('span', 'nm', card.name));
+    const mark = el('span', 'mark', card.mark);
+    const name = el('span', 'nm', card.name);
+    if (reveal.card < ART_CARDS) {
+      // 그림은 카드가 펼쳐진 뒤에만 불러온다. 불러오지 못하면 임시 모양으로 보인다.
+      const pic = document.createElement('img');
+      pic.className = 'pic';
+      pic.alt = '';
+      pic.src = `assets/cards/${String(reveal.card).padStart(2, '0')}.svg`;
+      pic.addEventListener('error', () => {
+        pic.remove();
+        face.classList.remove('art');
+      });
+      face.classList.add('art');
+      face.append(mark, pic, name);
+    } else {
+      face.append(mark, name);
+    }
     return face;
   }
 
