@@ -113,6 +113,9 @@ export const DECK_SIZE = CARDS.length; // 78
 // 그림 파일을 불러오지 못한 카드도 임시 모양으로 보인다.
 export const ART_CARDS = 78;
 
+// 카드 그림의 판 번호. 그림 파일을 바꾸면 이 숫자를 올린다(브라우저가 새 그림을 바로 받는다).
+export const ART_VERSION = 2;
+
 // 스프레드: 카드 수마다 자리의 이름
 export const SPREADS = {
   1: ['지금 마음'],
