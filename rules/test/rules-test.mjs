@@ -167,6 +167,22 @@ denied('자리 표시에 엉뚱한 값을 넣을 수 없다', await db('PUT', `$
 denied('상담사 자리에 나감 표시를 넣을 수 없다', await db('PUT', `${SEATS}/c`, P, 'left'));
 denied('자리 표시에 다른 항목을 넣을 수 없다', await db('PUT', `${SEATS}/memo`, P, 'here'));
 
+// --- 정해 둔 안내와 입력 중 표시 ---
+const TYPING = `rooms/${ROOM}/typing`;
+allowed('상담사는 정해 둔 안내를 보낼 수 있다', await db('POST', `rooms/${ROOM}/messages`, P, { ...msg('c', '안내문'), kind: 'notice' }));
+denied('손님은 안내인 척 글을 보낼 수 없다', await db('POST', `rooms/${ROOM}/messages`, G, { ...msg('g', '안내문'), kind: 'notice' }));
+denied('안내 표시에 엉뚱한 값을 넣을 수 없다', await db('POST', `rooms/${ROOM}/messages`, P, { ...msg('c', '안내문'), kind: 'ai' }));
+denied('카드 기록에는 안내 표시를 붙일 수 없다', await db('POST', `rooms/${ROOM}/messages`, P, { from: 'c', card: 1, reversed: false, label: '지금', kind: 'notice', at: NOW }));
+allowed('손님은 쓰는 중이라고 표시할 수 있다', await db('PUT', `${TYPING}/g`, G, true));
+allowed('손님은 쓰는 중 표시를 거둘 수 있다', await db('DELETE', `${TYPING}/g`, G));
+allowed('상담사는 쓰는 중이라고 표시할 수 있다', await db('PUT', `${TYPING}/c`, P, true));
+allowed('손님은 상담사가 쓰는 중인지 읽을 수 있다', await db('GET', TYPING, G));
+denied('손님은 상담사의 쓰는 중 표시를 바꿀 수 없다', await db('PUT', `${TYPING}/c`, G, true));
+denied('다른 사람은 쓰는 중 표시를 읽을 수 없다', await db('GET', TYPING, S));
+denied('다른 사람은 쓰는 중 표시를 쓸 수 없다', await db('PUT', `${TYPING}/g`, S, true));
+denied('쓰는 중 표시에 글을 담을 수 없다', await db('PUT', `${TYPING}/g`, G, '쓰고 있는 글'));
+denied('쓰는 중 표시에 다른 항목을 넣을 수 없다', await db('PUT', `${TYPING}/memo`, P, true));
+
 // --- 타로 ---
 const order = Array.from({ length: 78 }, (_, i) => 77 - i); // 위치 p에는 카드 77 - p가 있다
 const reversed = order.map((_, i) => i % 2 === 0);
@@ -248,6 +264,7 @@ denied('마친 방에는 다시 앉을 수 없다', await db('PUT', `rooms/${ROO
 denied('마친 뒤에는 상담사의 자리 표시가 다시 쓰이지 않는다', await db('PUT', `${SEATS}/c`, P, 'away'));
 denied('마친 뒤에는 손님의 자리 표시가 다시 쓰이지 않는다', await db('PUT', `${SEATS}/g`, G, 'away'));
 denied('마친 뒤에는 시작 시각이 다시 쓰이지 않는다', await db('PUT', `rooms/${ROOM}/meta/startedAt`, P, NOW));
+denied('마친 뒤에는 쓰는 중 표시가 다시 쓰이지 않는다', await db('PUT', `${TYPING}/c`, P, true));
 const revived = await db('GET', `rooms/${ROOM}`, 'owner');
 check('마친 방은 계속 비어 있다', { ok: revived.body === null, status: revived.status }, true);
 
