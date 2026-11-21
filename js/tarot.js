@@ -94,11 +94,43 @@ export function mountTable(root, { role, onPick, onReveal, onShuffle, onSpread }
     render();
   }
 
-  function frontCard(reveal, isNew) {
+  // 카드 크게 보기: 펼친 카드를 누르면 화면 가운데에 크게 보인다. 누른 사람의 화면에서만 열린다.
+  const zoom = document.createElement('dialog');
+  zoom.className = 'zoom';
+  const zoomBody = el('div', 'zoom-body');
+  const zoomClose = el('button', 'quiet', T.zoomClose);
+  zoomClose.type = 'button';
+  zoom.append(zoomBody, zoomClose);
+  document.body.append(zoom);
+  zoomClose.addEventListener('click', () => zoom.close());
+  zoom.addEventListener('click', (e) => {
+    if (e.target === zoom) zoom.close(); // 카드 바깥(어두운 곳)을 눌러도 닫힌다.
+  });
+
+  function openZoom(reveal, label) {
+    if (typeof zoom.showModal !== 'function') return;
+    const card = CARDS[reveal.card] || { name: '' };
+    zoomBody.textContent = '';
+    zoomBody.append(
+      frontCard(reveal, false),
+      el('p', 'zoom-cap', `${label} · ${card.name} ${reveal.reversed ? T.reversed : T.upright}`)
+    );
+    if (!zoom.open) zoom.showModal();
+  }
+
+  // label을 주면 눌러서 크게 볼 수 있는 단추로, 주지 않으면 그림으로만 만든다.
+  function frontCard(reveal, isNew, label) {
     const card = CARDS[reveal.card] || { mark: '', name: '' };
-    const face = el('div', `card front${reveal.reversed ? ' rv' : ''}${isNew && !reduceMotion ? ' new' : ''}`);
-    face.setAttribute('role', 'img');
-    face.setAttribute('aria-label', `${card.name} ${reveal.reversed ? T.reversed : T.upright}`);
+    const face = el(label ? 'button' : 'div', `card front${reveal.reversed ? ' rv' : ''}${isNew && !reduceMotion ? ' new' : ''}`);
+    const says = `${card.name} ${reveal.reversed ? T.reversed : T.upright}`;
+    if (label) {
+      face.type = 'button';
+      face.setAttribute('aria-label', `${says}, ${T.zoomOpen}`);
+      face.addEventListener('click', () => openZoom(reveal, label));
+    } else {
+      face.setAttribute('role', 'img');
+      face.setAttribute('aria-label', says);
+    }
     const mark = el('span', 'mark', card.mark);
     const name = el('span', 'nm', card.name);
     if (reveal.card < ART_CARDS) {
@@ -123,6 +155,8 @@ export function mountTable(root, { role, onPick, onReveal, onShuffle, onSpread }
     const spread = spreadOf();
     const picks = picksOf();
     const reveals = revealsOf();
+    // 카드를 다시 섞어 펼친 카드가 없어지면 크게 보던 것도 닫는다.
+    if (zoom.open && !Object.keys(reveals || {}).length) zoom.close();
     slots.textContent = '';
     slots.dataset.count = String(spread);
     SPREADS[spread].forEach((label, i) => {
@@ -131,7 +165,7 @@ export function mountTable(root, { role, onPick, onReveal, onShuffle, onSpread }
       const picked = picks[i] !== undefined;
       if (reveal) {
         const key = `${table.deal}:${i}`;
-        figure.append(frontCard(reveal, !seen.has(key)));
+        figure.append(frontCard(reveal, !seen.has(key), label));
         seen.add(key);
       } else if (picked && !isGuest) {
         const b = el('button', 'card back');
@@ -367,6 +401,7 @@ export function mountTable(root, { role, onPick, onReveal, onShuffle, onSpread }
       render();
     },
     reset() {
+      if (zoom.open) zoom.close();
       clearTimeout(shuffleTimer);
       shuffling = false;
       busy = false;
