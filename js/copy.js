@@ -85,7 +85,7 @@ export const COPY = {
         title: '진행 순서',
         ordered: true,
         lines: [
-          '카카오톡 채널로 예약 문의',
+          '카카오톡 채널 「present의 밤」으로 예약 문의',
           '약속 10분 전 초대 링크 받기',
           '약속을 읽고 자리에 앉기',
         ],
@@ -100,12 +100,14 @@ export const COPY = {
         ],
       },
     ],
-    // 예약: url이 비어 있으면 단추 대신 soon 문장이 보인다. 카카오톡 채널 주소가 생기면 url에 넣는다.
+    // 예약: open이 참이면 카카오톡 채널로 가는 단추가, 거짓이면 soon 문장이 보인다.
+    // 채널 이름은 「present의 밤」이다(「상담소」가 들어간 이름은 카카오에서 쓸 수 없었다).
     reserve: {
       title: '예약',
-      action: '카카오톡 채널로 예약 문의',
+      action: '카카오톡 채널 「present의 밤」에서 예약 문의',
       soon: '예약은 곧 열립니다. 지금은 문을 열 준비를 하고 있습니다.',
-      url: '',
+      url: 'https://pf.kakao.com/_PhGvX',
+      open: false,
     },
   },
 
