@@ -115,6 +115,10 @@ denied('앉기 전에는 글을 쓸 수 없다', await db('POST', `rooms/${ROOM}
 denied('없는 방에는 앉을 수 없다', await db('PUT', 'rooms/room_NOSUCHROOM12345/meta/guest', G, guest.localId));
 denied('남의 이름으로 앉을 수 없다', await db('PUT', `rooms/${ROOM}/meta/guest`, G, stranger.localId));
 denied('손님은 방을 통째로 고칠 수 없다', await db('PUT', `rooms/${ROOM}/meta`, G, { createdAt: 1, guest: guest.localId }));
+denied('앉기 전에는 자리 표시를 읽을 수 없다', await db('GET', `rooms/${ROOM}/presence`, G));
+denied('앉기 전에는 자리 표시를 쓸 수 없다', await db('PUT', `rooms/${ROOM}/presence/g`, G, 'here'));
+allowed('상담사는 손님이 오기 전에 자기 자리를 표시할 수 있다', await db('PUT', `rooms/${ROOM}/presence/c`, P, 'here'));
+denied('손님이 앉기 전에는 시작 시각을 적을 수 없다', await db('PUT', `rooms/${ROOM}/meta/startedAt`, P, NOW));
 
 // --- 손님이 앉는다 ---
 allowed('손님은 빈 방에 앉을 수 있다', await db('PUT', `rooms/${ROOM}/meta/guest`, G, guest.localId));
@@ -144,6 +148,24 @@ denied('보낸 글을 지울 수 없다', await db('DELETE', `rooms/${ROOM}/mess
 denied('손님은 대화를 통째로 지울 수 없다', await db('DELETE', `rooms/${ROOM}/messages`, G));
 denied('손님은 방을 지울 수 없다', await db('DELETE', `rooms/${ROOM}`, G));
 denied('방에 다른 항목을 넣을 수 없다', await db('PUT', `rooms/${ROOM}/extra`, P, { a: 1 }));
+
+// --- 시작 시각과 자리 표시 ---
+const SEATS = `rooms/${ROOM}/presence`;
+denied('손님은 시작 시각을 적을 수 없다', await db('PUT', `rooms/${ROOM}/meta/startedAt`, G, NOW));
+denied('시작 시각을 지어낼 수 없다', await db('PUT', `rooms/${ROOM}/meta/startedAt`, P, 1));
+allowed('상담사는 시작 시각을 적을 수 있다', await db('PUT', `rooms/${ROOM}/meta/startedAt`, P, NOW));
+allowed('손님은 시작 시각을 읽을 수 있다', await db('GET', `rooms/${ROOM}/meta/startedAt`, G));
+allowed('손님은 자기 자리를 표시할 수 있다', await db('PUT', `${SEATS}/g`, G, 'here'));
+allowed('손님의 자리를 비움으로 바꿀 수 있다', await db('PUT', `${SEATS}/g`, G, 'away'));
+allowed('손님은 두 사람의 자리 표시를 읽을 수 있다', await db('GET', SEATS, G));
+denied('손님은 상담사의 자리 표시를 바꿀 수 없다', await db('PUT', `${SEATS}/c`, G, 'away'));
+denied('손님은 자리 표시를 지울 수 없다', await db('DELETE', `${SEATS}/g`, G));
+denied('다른 사람은 자리 표시를 읽을 수 없다', await db('GET', SEATS, S));
+denied('다른 사람은 자리 표시를 쓸 수 없다', await db('PUT', `${SEATS}/g`, S, 'here'));
+denied('로그인 없이 자리 표시를 읽을 수 없다', await db('GET', SEATS, null));
+denied('자리 표시에 엉뚱한 값을 넣을 수 없다', await db('PUT', `${SEATS}/g`, G, '안녕하세요'));
+denied('상담사 자리에 나감 표시를 넣을 수 없다', await db('PUT', `${SEATS}/c`, P, 'left'));
+denied('자리 표시에 다른 항목을 넣을 수 없다', await db('PUT', `${SEATS}/memo`, P, 'here'));
 
 // --- 타로 ---
 const order = Array.from({ length: 78 }, (_, i) => 77 - i); // 위치 p에는 카드 77 - p가 있다
@@ -209,6 +231,11 @@ allowed('스프레드를 한 장으로 바꿀 수 있다', await db('PUT', `${TA
 allowed('한 장 스프레드에서 한 장을 고를 수 있다', await pick(G, 0, 12));
 denied('한 장 스프레드에서 둘째 장은 고를 수 없다', await pick(G, 1, 13));
 
+// --- 손님이 먼저 나간다 ---
+allowed('손님은 먼저 나갔다고 표시할 수 있다', await db('PUT', `${SEATS}/g`, G, 'left'));
+denied('먼저 나간 뒤에는 되돌릴 수 없다', await db('PUT', `${SEATS}/g`, G, 'here'));
+denied('손님이 먼저 나가도 방을 지울 수는 없다', await db('DELETE', `rooms/${ROOM}`, G));
+
 // --- 상담을 마친다 ---
 allowed('상담사는 방과 덱을 함께 지울 수 있다', await db('PATCH', '', P, { [`rooms/${ROOM}`]: null, [`private/${ROOM}`]: null, 'private/current': null }));
 const after = await db('GET', `rooms/${ROOM}`, 'owner');
@@ -217,6 +244,12 @@ check('마친 뒤에는 그 방의 대화와 카드, 섞인 순서가 남지 않
 denied('마친 뒤에는 손님이 대화를 읽을 수 없다', await db('GET', `rooms/${ROOM}/messages`, G));
 denied('마친 뒤에는 손님이 글을 쓸 수 없다', await db('POST', `rooms/${ROOM}/messages`, G, msg('g')));
 denied('마친 방에는 다시 앉을 수 없다', await db('PUT', `rooms/${ROOM}/meta/guest`, G, guest.localId));
+// 연결이 끊길 때 서버가 대신 쓰는 "자리 비움"이 지운 방을 되살리면 안 된다.
+denied('마친 뒤에는 상담사의 자리 표시가 다시 쓰이지 않는다', await db('PUT', `${SEATS}/c`, P, 'away'));
+denied('마친 뒤에는 손님의 자리 표시가 다시 쓰이지 않는다', await db('PUT', `${SEATS}/g`, G, 'away'));
+denied('마친 뒤에는 시작 시각이 다시 쓰이지 않는다', await db('PUT', `rooms/${ROOM}/meta/startedAt`, P, NOW));
+const revived = await db('GET', `rooms/${ROOM}`, 'owner');
+check('마친 방은 계속 비어 있다', { ok: revived.body === null, status: revived.status }, true);
 
 console.log(failed ? `\n실패 ${failed}건` : '\n모두 통과');
 process.exit(failed ? 1 : 0);

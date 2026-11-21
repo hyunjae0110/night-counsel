@@ -85,6 +85,7 @@
   font-size: var(--text-small);
   color: var(--dim);
   text-align: center;
+  word-break: keep-all;
 }
 
 .chat {
@@ -197,4 +198,56 @@
 
 .composer button {
   flex: none;
+}
+
+/* 방 머리의 오른쪽: 남은 시간과 단추 */
+.room-head .side {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.clock {
+  font-size: var(--text-small);
+  color: var(--dim);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 5분 전부터와 시간이 지난 뒤에는 촛불색으로 */
+.clock.warm {
+  color: var(--flame);
+}
+
+/* 마침: 대화와 카드가 지워지는 모습 */
+.room.erasing .composer,
+.room.erasing .table {
+  pointer-events: none;
+}
+
+.room.erasing .log > *,
+.room.erasing .table,
+.room.erasing .composer {
+  animation: erase 1.8s ease forwards;
+}
+
+.room.erasing .log > :nth-last-child(2) { animation-delay: 0.12s; }
+.room.erasing .log > :nth-last-child(3) { animation-delay: 0.24s; }
+.room.erasing .log > :nth-last-child(n + 4) { animation-delay: 0.36s; }
+
+@keyframes erase {
+  to {
+    opacity: 0;
+    filter: blur(6px);
+    transform: translateY(-8px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .room.erasing .log > *,
+  .room.erasing .table,
+  .room.erasing .composer {
+    animation: none;
+    opacity: 0;
+  }
 }

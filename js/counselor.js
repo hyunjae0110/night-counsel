@@ -18,6 +18,7 @@ import { COPY } from './copy.js';
 import { mountChat } from './chat.js';
 import { mountTable } from './tarot.js';
 import { DECK_SIZE, SPREADS } from './cards.js';
+import { AWAY_DELAY_MS, serverClock, mountClock, keepSeat } from './session.js';
 
 const { auth, db } = connect('counselor');
 const $ = (id) => document.getElementById(id);
@@ -31,6 +32,10 @@ const state = {
   guest: false,
   confirmEnd: false,
   notice: '',
+  done: '', // 방금 마친 상담이 지워졌다는 확인
+  peer: null, // 손님의 자리: null, 'here', 'away', 'left'
+  peerAwayAt: 0,
+  startedAt: null,
   online: true,
   everOnline: false,
 };
@@ -39,11 +44,16 @@ let stopMeta = null;
 let stopMessages = null;
 let stopTable = null;
 let stopDeck = null;
+let stopSeats = null;
+let seat = null;
 let tableNow = null; // rooms/{방}/table의 지금 값
 let deckNow = null; // private/{방}/deck: 섞인 순서. 상담사만 읽을 수 있다.
 let watchers = [];
 let confirmTimer = 0;
 let ready = false; // 로그인 상태를 처음 확인하기 전에는 아무 화면도 보이지 않는다.
+
+const serverNow = serverClock(db);
+const showClock = mountClock($('clock'), $('clock-say'));
 
 const chat = mountChat($('chat'), {
   me: 'c',
@@ -133,6 +143,13 @@ function render() {
     show('room-view');
     $('end').textContent = state.confirmEnd ? T.endConfirm : T.end;
     $('conn').hidden = state.online || !state.everOnline;
+    let text = '';
+    if (state.peer === 'left') text = COPY.session.c.left;
+    else if (state.peer === 'away' && Date.now() - state.peerAwayAt >= AWAY_DELAY_MS - 100)
+      text = COPY.session.c.away;
+    $('peer').hidden = !text;
+    $('peer').textContent = text;
+    showClock(state.startedAt, serverNow());
     return;
   }
 
@@ -166,13 +183,19 @@ function render() {
 
   $('notice').hidden = !state.notice;
   $('notice').textContent = state.notice;
+  $('done').hidden = !state.done || !!state.notice;
+  $('done').textContent = state.done;
 }
 
 function stopRoom() {
-  for (const stop of [stopMeta, stopMessages, stopTable, stopDeck]) if (stop) stop();
-  stopMeta = stopMessages = stopTable = stopDeck = null;
+  for (const stop of [stopMeta, stopMessages, stopTable, stopDeck, stopSeats]) if (stop) stop();
+  stopMeta = stopMessages = stopTable = stopDeck = stopSeats = null;
+  if (seat) seat.stop();
+  seat = null;
   tableNow = deckNow = null;
   state.guest = false;
+  state.peer = null;
+  state.startedAt = null;
   state.confirmEnd = false;
   chat.clear();
   tableView.reset();
@@ -182,12 +205,34 @@ function watchRoom(id) {
   stopRoom();
   state.roomId = id;
   if (!id) return;
+  // 초대 링크를 만든 때부터 present의 자리를 지킨다. 손님은 앉자마자 present가 있는지 알 수 있다.
+  seat = keepSeat(db, id, 'c');
+  let starting = false;
   stopMeta = onValue(ref(db, `rooms/${id}/meta`), (snap) => {
-    const seated = !!(snap.val() && snap.val().guest);
-    if (seated && !state.guest) chat.system(COPY.chat.seated);
+    const meta = snap.val() || {};
+    const seated = !!meta.guest;
+    const first = seated && !state.guest;
+    if (first) chat.system(COPY.chat.seated);
     state.guest = seated;
+    state.startedAt = typeof meta.startedAt === 'number' ? meta.startedAt : null;
+    // 손님이 앉은 것을 present가 처음 본 때가 상담의 시작이다. 남은 시간은 여기서부터 센다.
+    if (seated && !meta.startedAt && !starting) {
+      starting = true;
+      update(ref(db), { [`rooms/${id}/meta/startedAt`]: serverTimestamp() }).catch(() => {
+        starting = false;
+      });
+    }
     render();
-    if (seated) chat.focus();
+    if (first) chat.focus();
+  });
+  stopSeats = onValue(ref(db, `rooms/${id}/presence/g`), (snap) => {
+    const peer = snap.val() || null;
+    if (peer === 'away' && state.peer !== 'away') {
+      state.peerAwayAt = Date.now();
+      setTimeout(render, AWAY_DELAY_MS);
+    }
+    state.peer = peer;
+    render();
   });
   stopMessages = onChildAdded(query(ref(db, `rooms/${id}/messages`), limitToLast(200)), (snap) =>
     chat.add(snap.val())
@@ -228,34 +273,59 @@ function stopWatching() {
   state.door = null;
 }
 
-// 단추를 눌러 DB를 바꾸는 일은 모두 이 함수를 거친다.
+// 단추를 눌러 DB를 바꾸는 일은 모두 이 함수를 거친다. 잘 되면 true를 돌려준다.
 async function act(button, changes) {
   state.notice = '';
+  state.done = '';
   button.disabled = true;
+  let ok = true;
   try {
     await update(ref(db), changes);
   } catch (err) {
+    ok = false;
     state.notice = T.failed;
   }
   button.disabled = false;
   render();
+  return ok;
+}
+
+// 방을 지운다. 지운 뒤에 서버를 다시 읽어, 그 상담의 것이 정말 하나도 없는지 확인한다.
+async function erase(button, id, more = {}) {
+  if (seat) await seat.stop();
+  const ok = await act(button, {
+    [`rooms/${id}`]: null,
+    [`private/${id}`]: null,
+    'private/current': null,
+    ...more,
+  });
+  if (!ok) {
+    // 지우지 못했다면 상담은 이어진다. 자리를 다시 지킨다.
+    if (state.roomId === id) seat = keepSeat(db, id, 'c');
+    return false;
+  }
+  try {
+    const [room, hidden] = await Promise.all([
+      get(ref(db, `rooms/${id}`)),
+      get(ref(db, `private/${id}`)),
+    ]);
+    return !room.exists() && !hidden.exists();
+  } catch (err) {
+    return false;
+  }
 }
 
 // 문을 열거나 닫을 때마다 남아 있던 방과 초대를 모두 지운다.
-$('open-door').addEventListener('click', (e) =>
-  act(e.currentTarget, {
+async function setDoor(button, open) {
+  if (seat) await seat.stop();
+  act(button, {
     rooms: null,
     private: null,
-    door: { open: true, changedAt: serverTimestamp() },
-  })
-);
-$('close-door').addEventListener('click', (e) =>
-  act(e.currentTarget, {
-    rooms: null,
-    private: null,
-    door: { open: false, changedAt: serverTimestamp() },
-  })
-);
+    door: { open, changedAt: serverTimestamp() },
+  });
+}
+$('open-door').addEventListener('click', (e) => setDoor(e.currentTarget, true));
+$('close-door').addEventListener('click', (e) => setDoor(e.currentTarget, false));
 $('make-invite').addEventListener('click', (e) => {
   const id = newRoomId();
   act(e.currentTarget, {
@@ -264,15 +334,10 @@ $('make-invite').addEventListener('click', (e) => {
   });
 });
 $('cancel-invite').addEventListener('click', (e) => {
-  if (!state.roomId) return;
-  act(e.currentTarget, {
-    [`rooms/${state.roomId}`]: null,
-    [`private/${state.roomId}`]: null,
-    'private/current': null,
-  });
+  if (state.roomId) erase(e.currentTarget, state.roomId);
 });
 
-$('end').addEventListener('click', (e) => {
+$('end').addEventListener('click', async (e) => {
   if (!state.roomId) return;
   if (!state.confirmEnd) {
     state.confirmEnd = true;
@@ -284,11 +349,11 @@ $('end').addEventListener('click', (e) => {
     return render();
   }
   clearTimeout(confirmTimer);
-  act(e.currentTarget, {
-    [`rooms/${state.roomId}`]: null,
-    [`private/${state.roomId}`]: null,
-    'private/current': null,
-  });
+  const clean = await erase(e.currentTarget, state.roomId);
+  if (state.notice) return;
+  if (clean) state.done = T.erased;
+  else state.notice = T.eraseFailed;
+  render();
 });
 
 $('copy').addEventListener('click', async () => {
@@ -321,7 +386,12 @@ $('login-form').addEventListener('submit', async (e) => {
 });
 
 for (const id of ['logout', 'logout-denied']) {
-  $(id).addEventListener('click', () => signOut(auth));
+  $(id).addEventListener('click', async () => {
+    // 초대 링크를 만들어 둔 채 나가면 손님에게는 present가 자리를 비운 것으로 보인다.
+    if (seat) await seat.away();
+    seat = null;
+    signOut(auth);
+  });
 }
 
 onAuthStateChanged(auth, async (user) => {
@@ -347,3 +417,8 @@ onAuthStateChanged(auth, async (user) => {
 });
 
 render();
+
+// 남은 시간은 분 단위로만 보이므로 가끔만 다시 그린다.
+setInterval(() => {
+  if (!$('room-view').hidden) render();
+}, 10000);
