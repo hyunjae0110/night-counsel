@@ -253,9 +253,10 @@ function render() {
   }
   const reserve = make('section', '', 'reserve');
   reserve.append(make('h2', L.reserve.title));
-  if (L.reserve.url) {
+  if (L.reserve.url && L.reserve.open) {
     const link = make('a', L.reserve.action, 'reserve-link');
     link.href = L.reserve.url;
+    link.target = '_blank';
     link.rel = 'noopener';
     reserve.append(link);
   } else {
