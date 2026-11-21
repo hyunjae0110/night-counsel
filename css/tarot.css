@@ -174,17 +174,36 @@ button.card.back:hover:not(:disabled) {
   transform: rotate(180deg);
 }
 
+.card.front {
+  position: relative;
+}
+
+/* 뒤집기: 뒷면이 돌아 나오다가 절반에서 앞면으로 바뀐다 */
 .card.front.new {
-  animation: reveal 0.7s ease-out;
+  animation: reveal 0.9s ease-in-out;
 }
 
 .card.front.rv.new {
-  animation: reveal-rv 0.7s ease-out;
+  animation: reveal-rv 0.9s ease-in-out;
+}
+
+.card.front.new::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  border: 1px solid rgba(243, 178, 90, 0.55);
+  background:
+    radial-gradient(circle, rgba(243, 178, 90, 0.4) 0 1.4px, transparent 2px) center / 12px 12px,
+    linear-gradient(160deg, var(--card-back), var(--card-back-deep));
+  opacity: 0;
+  pointer-events: none;
+  animation: back-away 0.9s step-end;
 }
 
 @keyframes reveal {
   from {
-    transform: rotateY(90deg);
+    transform: rotateY(-180deg);
   }
   to {
     transform: rotateY(0);
@@ -193,85 +212,20 @@ button.card.back:hover:not(:disabled) {
 
 @keyframes reveal-rv {
   from {
-    transform: rotate(180deg) rotateY(90deg);
+    transform: rotate(180deg) rotateY(-180deg);
   }
   to {
     transform: rotate(180deg) rotateY(0);
   }
 }
 
-/* 덱: 남은 카드를 줄지어 펼친다 */
-.t-fan {
-  position: relative;
-  margin-top: 12px;
-  border-radius: 12px;
-  touch-action: pan-y;
-  user-select: none;
-  -webkit-user-select: none;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.t-fan:focus-visible {
-  outline: 2px solid var(--flame);
-  outline-offset: 4px;
-}
-
-.t-fan.pickable {
-  cursor: pointer;
-}
-
-.fc {
-  position: absolute;
-  border-radius: 5px;
-  transition: transform 0.15s ease;
-}
-
-.fc.up {
-  transform: translateY(-12px);
-  border-color: var(--flame);
-  box-shadow:
-    inset 0 0 0 3px var(--card-back-deep),
-    inset 0 0 0 4px var(--flame),
-    0 0 18px rgba(243, 178, 90, 0.6);
-}
-
-.t-fan.shuf .fc {
-  animation: shuffle 0.45s ease-in-out infinite;
-  animation-delay: var(--t);
-}
-
-@keyframes shuffle {
-  0%,
+@keyframes back-away {
+  0% {
+    opacity: 1;
+  }
+  50%,
   100% {
-    translate: 0 0;
-  }
-  35% {
-    translate: calc(var(--d) * 1px) -6px;
-  }
-  70% {
-    translate: calc(var(--d) * -1px) 3px;
-  }
-}
-
-.t-choose {
-  display: block;
-  margin: 12px auto 0;
-}
-
-.t-notice {
-  margin: 10px auto 0;
-  text-align: center;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .fc {
-    transition: none;
-  }
-
-  .card.front.new,
-  .card.front.rv.new,
-  .t-fan.shuf .fc {
-    animation: none;
+    opacity: 0;
   }
 }
 
@@ -329,4 +283,14 @@ button.card.front {
   font-size: var(--text-small);
   color: var(--dim);
   text-align: center;
+}
+
+/* 움직임 줄이기를 켠 기기에서는 탁자와 큰 카드의 움직임을 모두 끈다 */
+@media (prefers-reduced-motion: reduce) {
+  .table *,
+  .table *::after,
+  .zoom * {
+    animation: none !important;
+    transition: none !important;
+  }
 }

@@ -19,6 +19,9 @@ import { mountChat } from './chat.js';
 import { mountTable } from './tarot.js';
 import { DECK_SIZE, SPREADS } from './cards.js';
 import { AWAY_DELAY_MS, serverClock, mountClock, keepSeat, keepTyping } from './session.js';
+import { armSound, bell } from './sound.js';
+
+armSound();
 
 const { auth, db } = connect('counselor');
 const $ = (id) => document.getElementById(id);
@@ -220,10 +223,14 @@ function watchRoom(id) {
   seat = keepSeat(db, id, 'c');
   typing = keepTyping(db, id, 'c', (on) => chat.peerTyping(on));
   let starting = false;
+  let sawEmpty = false; // 손님이 아직 앉지 않은 방을 이 화면이 본 적이 있다
   stopMeta = onValue(ref(db, `rooms/${id}/meta`), (snap) => {
     const meta = snap.val() || {};
     const seated = !!meta.guest;
     const first = seated && !state.guest;
+    if (snap.exists() && !seated) sawEmpty = true;
+    // 종소리는 손님이 앉는 순간에만 한 번. 새로고침으로 이미 앉아 있는 방을 다시 볼 때는 울리지 않는다.
+    if (first && sawEmpty) bell();
     if (first) {
       chat.system(COPY.chat.seated);
       chat.intro(); // 손님이 본 안내를 present도 같은 자리에서 본다.

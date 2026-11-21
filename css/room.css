@@ -380,3 +380,10 @@
   color: var(--dim);
   word-break: keep-all;
 }
+
+/* 방 머리의 이름은 제목(h1)이지만 모양은 작은 이름표 그대로 둔다 */
+.room-head h1.name {
+  margin: 0;
+  font: 400 15px var(--display);
+  letter-spacing: 0.08em;
+}
