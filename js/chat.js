@@ -259,6 +259,24 @@ export function mountChat(root, { me, onSend, onTyping, onNotice }) {
       log.append(row);
       scrollDown();
     },
+    // 상담실에 들어왔을 때 맨 위에 보이는 안내(채팅 규칙과 미성년자 안내).
+    intro() {
+      empty.remove();
+      const box = document.createElement('div');
+      box.className = 'notice-card intro';
+      const label = document.createElement('span');
+      label.className = 'by';
+      label.textContent = COPY.chat.noticeLabel;
+      const list = document.createElement('ul');
+      for (const line of COPY.chat.intro) {
+        const li = document.createElement('li');
+        li.textContent = line;
+        list.append(li);
+      }
+      box.append(label, list);
+      log.append(box);
+      scrollDown();
+    },
     system(text) {
       empty.remove();
       const p = document.createElement('p');
