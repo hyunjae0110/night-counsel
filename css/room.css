@@ -130,6 +130,7 @@
   border-radius: 14px;
   background: rgba(236, 231, 219, 0.05);
   white-space: pre-wrap;
+  word-break: keep-all;
   overflow-wrap: anywhere;
 }
 
@@ -250,4 +251,120 @@
     animation: none;
     opacity: 0;
   }
+}
+
+/* 정해 둔 안내: present의 말(명조 말풍선)과 구분되는 카드 */
+.notice-card {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 14px;
+  border: 1px dashed rgba(243, 178, 90, 0.45);
+  border-radius: 14px;
+}
+
+.notice-card .by {
+  font-size: var(--text-small);
+  color: var(--flame);
+}
+
+.notice-card p {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+.calls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.calls a {
+  min-height: var(--tap);
+  padding: 0 16px;
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--ink);
+  font-weight: 400;
+  font-size: 15px;
+  text-decoration: none;
+}
+
+.typing {
+  margin: 0;
+  padding: 0 16px 8px;
+  font-size: var(--text-small);
+  color: var(--dim);
+}
+
+/* 상담사 화면: 안내 고르기 */
+.notice-bar {
+  display: flex;
+  padding: 8px 10px 0;
+  border-top: 1px solid var(--line);
+}
+
+.notice-bar + .composer {
+  border-top: 0;
+}
+
+.notice-open {
+  min-height: 36px;
+  padding: 6px 14px;
+  font-size: var(--text-small);
+  color: var(--dim);
+}
+
+.notice-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 14px;
+  border-top: 1px solid var(--line);
+  max-height: 60%;
+  overflow-y: auto;
+}
+
+.notice-title {
+  margin: 0;
+  font-size: var(--text-small);
+  color: var(--dim);
+}
+
+.notice-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.notice-list button {
+  padding: 8px 14px;
+  font-size: 14px;
+}
+
+.notice-list button[aria-pressed='true'] {
+  border-color: var(--flame);
+}
+
+.notice-list small {
+  color: var(--dim);
+}
+
+.notice-preview {
+  margin: 0;
+  padding: 10px 12px;
+  border: 1px dashed rgba(243, 178, 90, 0.45);
+  border-radius: 12px;
+  word-break: keep-all;
+}
+
+.notice-foot {
+  display: flex;
+  gap: 8px;
 }

@@ -67,6 +67,9 @@
             "label": {
               ".validate": "newData.isString() && newData.val().length <= 20"
             },
+            "kind": {
+              ".validate": "newData.val() === 'notice' && newData.parent().child('from').val() === 'c' && newData.parent().child('text').exists()"
+            },
             "$other": {
               ".validate": false
             }
@@ -121,6 +124,19 @@
           },
           "c": {
             ".validate": "(newData.val() === 'here' || newData.val() === 'away') && newData.parent().parent().child('meta').child('createdAt').exists()"
+          },
+          "$other": {
+            ".validate": false
+          }
+        },
+        "typing": {
+          ".read": "auth != null && root.child('rooms').child($room).child('meta').child('guest').val() === auth.uid",
+          "g": {
+            ".write": "auth != null && root.child('rooms').child($room).child('meta').child('guest').val() === auth.uid",
+            ".validate": "newData.val() === true && newData.parent().parent().child('meta').child('guest').exists()"
+          },
+          "c": {
+            ".validate": "newData.val() === true && newData.parent().parent().child('meta').child('createdAt').exists()"
           },
           "$other": {
             ".validate": false

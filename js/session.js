@@ -96,3 +96,30 @@ export function keepSeat(db, roomId, who) {
     leave: () => release('left'),
   };
 }
+
+// 쓰는 중 표시: rooms/{방}/typing/{who}에 참 값만 둔다(글의 내용은 가지 않는다).
+// set(on): 내가 쓰는 중인지 알린다. onPeer(on): 상대가 쓰는 중인지 바뀔 때 부른다.
+export function keepTyping(db, roomId, who, onPeer) {
+  const mine = ref(db, `rooms/${roomId}/typing/${who}`);
+  const theirs = ref(db, `rooms/${roomId}/typing/${who === 'g' ? 'c' : 'g'}`);
+  let armed = false;
+  const stopPeer = onValue(
+    theirs,
+    (snap) => onPeer(snap.val() === true),
+    () => onPeer(false)
+  );
+  return {
+    async set(on) {
+      if (on && !armed) {
+        armed = true;
+        await onDisconnect(mine).remove(); // 쓰다가 연결이 끊기면 표시도 사라진다.
+      }
+      await set(mine, on ? true : null);
+    },
+    stop() {
+      stopPeer();
+      onPeer(false);
+      onDisconnect(mine).cancel().catch(() => {});
+    },
+  };
+}

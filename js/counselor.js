@@ -18,7 +18,7 @@ import { COPY } from './copy.js';
 import { mountChat } from './chat.js';
 import { mountTable } from './tarot.js';
 import { DECK_SIZE, SPREADS } from './cards.js';
-import { AWAY_DELAY_MS, serverClock, mountClock, keepSeat } from './session.js';
+import { AWAY_DELAY_MS, serverClock, mountClock, keepSeat, keepTyping } from './session.js';
 
 const { auth, db } = connect('counselor');
 const $ = (id) => document.getElementById(id);
@@ -46,6 +46,7 @@ let stopTable = null;
 let stopDeck = null;
 let stopSeats = null;
 let seat = null;
+let typing = null;
 let tableNow = null; // rooms/{방}/table의 지금 값
 let deckNow = null; // private/{방}/deck: 섞인 순서. 상담사만 읽을 수 있다.
 let watchers = [];
@@ -59,6 +60,15 @@ const chat = mountChat($('chat'), {
   me: 'c',
   onSend: (text) =>
     push(ref(db, `rooms/${state.roomId}/messages`), { from: 'c', text, at: serverTimestamp() }),
+  onTyping: (on) => typing && typing.set(on),
+  // 정해 둔 안내: present가 미리 써 둔 글을 안내 표시와 함께 보낸다.
+  onNotice: (text) =>
+    push(ref(db, `rooms/${state.roomId}/messages`), {
+      from: 'c',
+      text,
+      kind: 'notice',
+      at: serverTimestamp(),
+    }),
 });
 
 // 0 이상 n 미만의 치우침 없는 난수.
@@ -191,7 +201,8 @@ function stopRoom() {
   for (const stop of [stopMeta, stopMessages, stopTable, stopDeck, stopSeats]) if (stop) stop();
   stopMeta = stopMessages = stopTable = stopDeck = stopSeats = null;
   if (seat) seat.stop();
-  seat = null;
+  if (typing) typing.stop();
+  seat = typing = null;
   tableNow = deckNow = null;
   state.guest = false;
   state.peer = null;
@@ -207,6 +218,7 @@ function watchRoom(id) {
   if (!id) return;
   // 초대 링크를 만든 때부터 present의 자리를 지킨다. 손님은 앉자마자 present가 있는지 알 수 있다.
   seat = keepSeat(db, id, 'c');
+  typing = keepTyping(db, id, 'c', (on) => chat.peerTyping(on));
   let starting = false;
   stopMeta = onValue(ref(db, `rooms/${id}/meta`), (snap) => {
     const meta = snap.val() || {};
@@ -293,6 +305,7 @@ async function act(button, changes) {
 // 방을 지운다. 지운 뒤에 서버를 다시 읽어, 그 상담의 것이 정말 하나도 없는지 확인한다.
 async function erase(button, id, more = {}) {
   if (seat) await seat.stop();
+  if (typing) typing.stop();
   const ok = await act(button, {
     [`rooms/${id}`]: null,
     [`private/${id}`]: null,
@@ -318,6 +331,7 @@ async function erase(button, id, more = {}) {
 // 문을 열거나 닫을 때마다 남아 있던 방과 초대를 모두 지운다.
 async function setDoor(button, open) {
   if (seat) await seat.stop();
+  if (typing) typing.stop();
   act(button, {
     rooms: null,
     private: null,

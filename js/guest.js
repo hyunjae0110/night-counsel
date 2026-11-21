@@ -16,7 +16,14 @@ import {
 import { COPY } from './copy.js';
 import { mountChat } from './chat.js';
 import { mountTable } from './tarot.js';
-import { SESSION_MINUTES, AWAY_DELAY_MS, serverClock, mountClock, keepSeat } from './session.js';
+import {
+  SESSION_MINUTES,
+  AWAY_DELAY_MS,
+  serverClock,
+  mountClock,
+  keepSeat,
+  keepTyping,
+} from './session.js';
 
 const { auth, db } = connect('guest');
 const $ = (id) => document.getElementById(id);
@@ -51,6 +58,7 @@ let stopMessages = null;
 let stopTable = null;
 let stopSeats = null;
 let seat = null;
+let typing = null;
 let wasMine = false;
 let leaving = false; // 먼저 나가기를 눌러 서버의 확인을 기다리는 중
 let confirmTimer = 0;
@@ -64,6 +72,7 @@ const chat = mountChat($('chat'), {
   me: 'g',
   onSend: (text) =>
     push(ref(db, `rooms/${roomId}/messages`), { from: 'g', text, at: serverTimestamp() }),
+  onTyping: (on) => typing && typing.set(on),
 });
 
 // 손님은 뒷면만 보이는 카드의 위치를 고른다. 그 자리에 어떤 카드가 있는지는 받지 않는다.
@@ -80,6 +89,7 @@ function startMessages() {
   if (stopMessages) return;
   chat.clear();
   chat.system(COPY.chat.seated);
+  typing = keepTyping(db, roomId, 'g', (on) => chat.peerTyping(on));
   stopTable = onValue(
     ref(db, `rooms/${roomId}/table`),
     (snap) => table.update(snap.val()),
@@ -96,7 +106,8 @@ function stopListening() {
   for (const stop of [stopMessages, stopTable, stopSeats]) if (stop) stop();
   stopMessages = stopTable = stopSeats = null;
   if (seat) seat.stop();
-  seat = null;
+  if (typing) typing.stop();
+  seat = typing = null;
 }
 
 function clearRoom() {
@@ -281,6 +292,8 @@ $('leave').addEventListener('click', async () => {
     await mine.leave();
     for (const stop of [stopMessages, stopTable]) if (stop) stop();
     stopMessages = stopTable = null;
+    if (typing) typing.stop();
+    typing = null;
     state.left = true;
     clearRoom();
   } catch (err) {
