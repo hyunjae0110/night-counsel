@@ -224,7 +224,44 @@ function render() {
   const action = $('door-action');
   action.hidden = !text.action;
   if (text.action) action.textContent = text.action;
+
+  // 안내는 초대 링크 없이 온 사람에게만, 문이 열려 있든 닫혀 있든 보인다.
+  const showLanding = state.room === 'none' && (key === 'open' || key === 'closed');
+  $('landing').hidden = !showLanding;
+  $('door-view').classList.toggle('has-landing', showLanding);
 }
+
+// 안내 화면의 글자를 채운다.
+(function fillLanding() {
+  const L = COPY.landing;
+  const root = $('landing');
+  const make = (tag, text, className) => {
+    const node = document.createElement(tag);
+    if (className) node.className = className;
+    if (text) node.textContent = text;
+    return node;
+  };
+  for (const part of L.sections) {
+    const section = make('section');
+    const list = make(part.ordered ? 'ol' : 'ul');
+    for (const line of part.lines) {
+      list.append(make('li', typeof line === 'function' ? line(SESSION_MINUTES) : line));
+    }
+    section.append(make('h2', part.title), list);
+    root.append(section);
+  }
+  const reserve = make('section', '', 'reserve');
+  reserve.append(make('h2', L.reserve.title));
+  if (L.reserve.url) {
+    const link = make('a', L.reserve.action, 'reserve-link');
+    link.href = L.reserve.url;
+    link.rel = 'noopener';
+    reserve.append(link);
+  } else {
+    reserve.append(make('p', L.reserve.soon));
+  }
+  root.append(reserve);
+})();
 
 // 이용 약속 화면의 글자를 채운다.
 (function fillPromise() {
