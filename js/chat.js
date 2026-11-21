@@ -1,5 +1,6 @@
 // 손님 화면과 상담사 화면이 함께 쓰는 대화창.
 import { COPY } from './copy.js';
+import { CARDS } from './cards.js';
 
 export const MAX_MESSAGE = 1000;
 const SEND_GAP_MS = 500;
@@ -80,9 +81,24 @@ export function mountChat(root, { me, onSend }) {
   }
 
   return {
-    // msg: { from: 'c' | 'g', text }
+    // msg: { from: 'c' | 'g', text } 또는 펼친 카드의 기록 { from: 'c', card, reversed, label }
     add(msg) {
       empty.remove();
+      if (typeof msg.card === 'number') {
+        const card = CARDS[msg.card];
+        const line = document.createElement('p');
+        line.className = 'cardline';
+        const name = document.createElement('b');
+        name.textContent = card ? card.name : '';
+        line.append(
+          `${String(msg.label ?? '')} · `,
+          name,
+          ` ${msg.reversed ? COPY.tarot.reversed : COPY.tarot.upright}`
+        );
+        log.append(line);
+        scrollDown();
+        return;
+      }
       const row = document.createElement('div');
       row.className = `msg ${msg.from === me ? 'me' : 'you'}${msg.from === 'c' ? ' cn' : ''}`;
       const by = document.createElement('span');

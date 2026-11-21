@@ -15,6 +15,7 @@
 <link rel="stylesheet" href="css/base.css">
 <link rel="stylesheet" href="css/door.css">
 <link rel="stylesheet" href="css/room.css">
+<link rel="stylesheet" href="css/tarot.css">
 </head>
 <body>
 
@@ -42,7 +43,10 @@
     <span class="who"><span class="lamp" aria-hidden="true"></span><span class="name">밤의 작은 상담소</span></span>
   </header>
   <p id="conn" class="conn" role="status" hidden>연결이 잠시 끊겼어요. 다시 잇는 중이에요.</p>
-  <section id="chat" class="chat" aria-label="대화"></section>
+  <div class="room-body">
+    <section id="table" class="table" aria-label="타로 탁자" hidden></section>
+    <section id="chat" class="chat" aria-label="대화"></section>
+  </div>
 </main>
 
 <noscript><p class="lead" style="margin:24px auto;text-align:center">이 페이지는 자바스크립트를 켜야 열려요.</p></noscript>

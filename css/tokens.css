@@ -10,6 +10,11 @@
   --flame: #f3b25a;
   --card-back: #36284e;
   --card-face: #efe8d8;
+  --card-back-deep: #1b1430;
+  --card-ink: #1a1420;
+  --card-gold: #8a5e22;
+  --table-wood: #2a1a12;
+  --table-wood-deep: #120c0a;
 
   --display: "Nanum Myeongjo", "Noto Serif KR", serif;
   --body: "Noto Sans KR", "Apple SD Gothic Neo", system-ui, sans-serif;

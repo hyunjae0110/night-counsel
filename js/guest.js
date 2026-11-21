@@ -5,6 +5,7 @@ import {
   signInAnonymously,
   ref,
   set,
+  update,
   push,
   onValue,
   onChildAdded,
@@ -14,6 +15,7 @@ import {
 } from './firebase.js';
 import { COPY } from './copy.js';
 import { mountChat } from './chat.js';
+import { mountTable } from './tarot.js';
 
 const { auth, db } = connect('guest');
 const $ = (id) => document.getElementById(id);
@@ -36,6 +38,7 @@ const state = {
 };
 
 let stopMessages = null;
+let stopTable = null;
 let wasMine = false;
 
 const chat = mountChat($('chat'), {
@@ -44,10 +47,25 @@ const chat = mountChat($('chat'), {
     push(ref(db, `rooms/${roomId}/messages`), { from: 'g', text, at: serverTimestamp() }),
 });
 
+// 손님은 뒷면만 보이는 카드의 위치를 고른다. 그 자리에 어떤 카드가 있는지는 받지 않는다.
+const table = mountTable($('table'), {
+  role: 'g',
+  onPick: (slot, pos) =>
+    update(ref(db, `rooms/${roomId}/table`), {
+      [`picks/${slot}`]: String(pos),
+      [`taken/${pos}`]: String(slot),
+    }),
+});
+
 function startMessages() {
   if (stopMessages) return;
   chat.clear();
   chat.system(COPY.chat.seated);
+  stopTable = onValue(
+    ref(db, `rooms/${roomId}/table`),
+    (snap) => table.update(snap.val()),
+    () => {}
+  );
   stopMessages = onChildAdded(
     query(ref(db, `rooms/${roomId}/messages`), limitToLast(200)),
     (snap) => chat.add(snap.val()),
@@ -57,8 +75,10 @@ function startMessages() {
 
 function endSession() {
   if (stopMessages) stopMessages();
-  stopMessages = null;
+  if (stopTable) stopTable();
+  stopMessages = stopTable = null;
   chat.clear();
+  table.reset();
 }
 
 function render() {

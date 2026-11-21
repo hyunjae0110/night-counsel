@@ -47,6 +47,34 @@ export const COPY = {
     offline: '연결이 잠시 끊겼어요. 다시 잇는 중이에요.',
   },
 
+  tarot: {
+    spreadLabel: '펼칠 카드 수',
+    spreadNames: { 1: '한 장', 3: '세 장' },
+    shuffle: '카드 섞기',
+    reshuffle: '다시 섞기',
+    choose: '이 카드 고르기',
+    revealLabel: '카드 펼치기',
+    upright: '정방향',
+    reversed: '역방향',
+    fanLabel: '덱에서 카드 고르기',
+    fanNone: '아직 고른 카드가 없어요',
+    fanNth: (n, total) => `남은 ${total}장 중 ${n}번째 카드`,
+    failed: '잘 되지 않았어요. 잠시 뒤에 다시 해 주세요.',
+    g: {
+      shuffling: 'present가 카드를 섞고 있어요',
+      picking: (left) => `마음이 가는 카드를 ${left}장 골라 주세요. 덱 위를 훑으면 카드가 올라와요.`,
+      revealing: 'present가 카드를 펼칠 거예요',
+      done: '카드가 모두 펼쳐졌어요',
+    },
+    c: {
+      idle: '카드를 섞으면 손님 화면에 덱이 펼쳐져요.',
+      shuffling: '카드를 섞는 중이에요',
+      picking: (left, done, total) => `손님이 카드를 고르는 중이에요 (${done}/${total})`,
+      revealing: '뒷면인 카드를 눌러 한 장씩 펼치세요',
+      done: '모두 펼쳤어요. 이야기를 이어가세요.',
+    },
+  },
+
   counselor: {
     loginTitle: 'present 로그인',
     email: '이메일',

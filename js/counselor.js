@@ -16,6 +16,8 @@ import {
 } from './firebase.js';
 import { COPY } from './copy.js';
 import { mountChat } from './chat.js';
+import { mountTable } from './tarot.js';
+import { DECK_SIZE, SPREADS } from './cards.js';
 
 const { auth, db } = connect('counselor');
 const $ = (id) => document.getElementById(id);
@@ -35,6 +37,10 @@ const state = {
 
 let stopMeta = null;
 let stopMessages = null;
+let stopTable = null;
+let stopDeck = null;
+let tableNow = null; // rooms/{방}/table의 지금 값
+let deckNow = null; // private/{방}/deck: 섞인 순서. 상담사만 읽을 수 있다.
 let watchers = [];
 let confirmTimer = 0;
 let ready = false; // 로그인 상태를 처음 확인하기 전에는 아무 화면도 보이지 않는다.
@@ -43,6 +49,60 @@ const chat = mountChat($('chat'), {
   me: 'c',
   onSend: (text) =>
     push(ref(db, `rooms/${state.roomId}/messages`), { from: 'c', text, at: serverTimestamp() }),
+});
+
+// 0 이상 n 미만의 치우침 없는 난수.
+function randomBelow(n) {
+  const limit = Math.floor(0x100000000 / n) * n;
+  const buf = new Uint32Array(1);
+  do crypto.getRandomValues(buf);
+  while (buf[0] >= limit);
+  return buf[0] % n;
+}
+
+// 78장을 섞고 장마다 정·역방향을 정한다(반반).
+function newDeck() {
+  const order = Array.from({ length: DECK_SIZE }, (_, i) => i);
+  for (let i = order.length - 1; i > 0; i--) {
+    const j = randomBelow(i + 1);
+    [order[i], order[j]] = [order[j], order[i]];
+  }
+  return { order, reversed: order.map(() => randomBelow(2) === 1) };
+}
+
+const tableView = mountTable($('table'), {
+  role: 'c',
+  // 섞기: 새 순서는 상담사만 읽는 자리에 두고, 탁자는 비운다(고른 카드와 펼친 카드가 사라진다).
+  onShuffle: (spread) =>
+    update(ref(db), {
+      [`private/${state.roomId}/deck`]: newDeck(),
+      [`rooms/${state.roomId}/table`]: {
+        spread,
+        deal: ((tableNow && tableNow.deal) || 0) + 1,
+        dealtAt: serverTimestamp(),
+      },
+    }),
+  onSpread: (spread) => update(ref(db), { [`rooms/${state.roomId}/table/spread`]: spread }),
+  // 펼치기: 손님이 고른 위치의 카드를 탁자에 올리고, 대화에도 기록을 남긴다.
+  onReveal: (slot) => {
+    const picks = (tableNow && tableNow.picks) || {};
+    const pos = picks[slot];
+    if (pos === undefined || pos === null || !deckNow) throw new Error('no pick');
+    const card = deckNow.order[Number(pos)];
+    const reversed = deckNow.reversed[Number(pos)] === true;
+    const spread = tableNow.spread === 1 ? 1 : 3;
+    const key = push(ref(db, `rooms/${state.roomId}/messages`)).key;
+    return update(ref(db), {
+      [`rooms/${state.roomId}/table/reveals/${slot}`]: { card, reversed },
+      [`rooms/${state.roomId}/messages/${key}`]: {
+        from: 'c',
+        card,
+        reversed,
+        label: SPREADS[spread][slot],
+        at: serverTimestamp(),
+      },
+    });
+  },
 });
 
 // 추측할 수 없는 방 이름을 만든다(128비트).
@@ -109,12 +169,13 @@ function render() {
 }
 
 function stopRoom() {
-  if (stopMeta) stopMeta();
-  if (stopMessages) stopMessages();
-  stopMeta = stopMessages = null;
+  for (const stop of [stopMeta, stopMessages, stopTable, stopDeck]) if (stop) stop();
+  stopMeta = stopMessages = stopTable = stopDeck = null;
+  tableNow = deckNow = null;
   state.guest = false;
   state.confirmEnd = false;
   chat.clear();
+  tableView.reset();
 }
 
 function watchRoom(id) {
@@ -131,6 +192,13 @@ function watchRoom(id) {
   stopMessages = onChildAdded(query(ref(db, `rooms/${id}/messages`), limitToLast(200)), (snap) =>
     chat.add(snap.val())
   );
+  stopTable = onValue(ref(db, `rooms/${id}/table`), (snap) => {
+    tableNow = snap.val();
+    tableView.update(tableNow);
+  });
+  stopDeck = onValue(ref(db, `private/${id}/deck`), (snap) => {
+    deckNow = snap.val();
+  });
 }
 
 function startWatching() {
@@ -197,7 +265,11 @@ $('make-invite').addEventListener('click', (e) => {
 });
 $('cancel-invite').addEventListener('click', (e) => {
   if (!state.roomId) return;
-  act(e.currentTarget, { [`rooms/${state.roomId}`]: null, 'private/current': null });
+  act(e.currentTarget, {
+    [`rooms/${state.roomId}`]: null,
+    [`private/${state.roomId}`]: null,
+    'private/current': null,
+  });
 });
 
 $('end').addEventListener('click', (e) => {
@@ -212,7 +284,11 @@ $('end').addEventListener('click', (e) => {
     return render();
   }
   clearTimeout(confirmTimer);
-  act(e.currentTarget, { [`rooms/${state.roomId}`]: null, 'private/current': null });
+  act(e.currentTarget, {
+    [`rooms/${state.roomId}`]: null,
+    [`private/${state.roomId}`]: null,
+    'private/current': null,
+  });
 });
 
 $('copy').addEventListener('click', async () => {
