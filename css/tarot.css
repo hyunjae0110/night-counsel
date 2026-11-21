@@ -229,6 +229,81 @@ button.card.back:hover:not(:disabled) {
   }
 }
 
+/* 덱: 남은 카드를 줄지어 펼친다 */
+.t-fan {
+  position: relative;
+  margin-top: 12px;
+  border-radius: 12px;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.t-fan:focus-visible {
+  outline: 2px solid var(--flame);
+  outline-offset: 4px;
+}
+
+.t-fan.pickable {
+  cursor: pointer;
+}
+
+.fc {
+  position: absolute;
+  border-radius: 5px;
+  transition: transform 0.15s ease;
+}
+
+.fc.up {
+  transform: translateY(-12px);
+  border-color: var(--flame);
+  box-shadow:
+    inset 0 0 0 3px var(--card-back-deep),
+    inset 0 0 0 4px var(--flame),
+    0 0 18px rgba(243, 178, 90, 0.6);
+}
+
+.t-fan.shuf .fc {
+  animation: shuffle 0.45s ease-in-out infinite;
+  animation-delay: var(--t);
+}
+
+@keyframes shuffle {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  35% {
+    translate: calc(var(--d) * 1px) -6px;
+  }
+  70% {
+    translate: calc(var(--d) * -1px) 3px;
+  }
+}
+
+.t-choose {
+  display: block;
+  margin: 12px auto 0;
+}
+
+.t-notice {
+  margin: 10px auto 0;
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fc {
+    transition: none;
+  }
+
+  .card.front.new,
+  .card.front.rv.new,
+  .t-fan.shuf .fc {
+    animation: none;
+  }
+}
+
 /* 카드 크게 보기 */
 button.card.front {
   cursor: zoom-in;
