@@ -60,7 +60,8 @@ export function mountSite() {
   burger.setAttribute('aria-expanded', 'false');
   burger.setAttribute('aria-controls', 'site-panel');
   burger.append(make('span'), make('span'));
-  navIn.append(brand, links, burger);
+  const cta = sceneLink({ label: '예약 문의', go: 'book' }, 'site-cta');
+  navIn.append(brand, links, cta, burger);
   nav.append(navIn);
 
   // 펼친 메뉴
