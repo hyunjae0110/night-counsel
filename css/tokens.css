@@ -19,6 +19,19 @@
   --display: "Nanum Myeongjo", "Noto Serif KR", serif;
   --body: "Noto Sans KR", "Apple SD Gothic Neo", system-ui, sans-serif;
 
+  /* 대문과 문서 화면에서 더 쓰는 값 */
+  --gap: #14151f;
+  --tile: #11121c;
+  --faint: #6f6c7a;
+  --flame-ink: #1c1304;
+  --veil: rgba(7, 8, 15, 0.72);
+  --veil-deep: rgba(10, 11, 18, 0.9);
+  --scrim: rgba(7, 8, 15, 0.5);
+  --glow: rgba(243, 178, 90, 0.55);
+  --loud: "Pretendard Variable", Pretendard, "Apple SD Gothic Neo", "Noto Sans KR", system-ui, sans-serif;
+  --site-nav: 48px;
+  --wrap: 1080px;
+
   --text: 16px;
   --text-small: 13px;
   --tap: 44px;
