@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>밤의 작은 상담소 — 대문 시안</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+:root {
+  color-scheme: dark;
+  --night: #07080f;
+  --gap: #14151f;
+  --card: #11121c;
+  --ink: #f2eee4;
+  --dim: #9d9aa8;
+  --faint: #6f6c7a;
+  --line: rgba(236, 231, 219, 0.14);
+  --flame: #f3b25a;
+  --flame-ink: #1c1304;
+  --sans: "Pretendard Variable", Pretendard, "Apple SD Gothic Neo", "Noto Sans KR", system-ui, sans-serif;
+  --nav: 48px;
+  --wrap: 1080px;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--gap);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 17px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  word-break: keep-all;
+}
+a { color: inherit; text-decoration: none; }
+img { display: block; max-width: 100%; }
+
+/* 위쪽 메뉴 줄 */
+.nav {
+  position: fixed; inset: 0 0 auto 0; z-index: 20;
+  height: var(--nav);
+  background: rgba(7, 8, 15, 0.72);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid transparent;
+  transition: background .4s ease, border-color .4s ease;
+}
+.nav-in {
+  max-width: var(--wrap); height: 100%; margin: 0 auto; padding: 0 22px;
+  display: flex; align-items: center; justify-content: space-between; gap: 24px;
+}
+.brand { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; display: flex; align-items: center; gap: 9px; }
+.brand i { width: 7px; height: 7px; border-radius: 50%; background: var(--faint); transition: background 1.2s ease, box-shadow 1.2s ease; }
+.lit .brand i { background: var(--flame); box-shadow: 0 0 10px 2px rgba(243, 178, 90, 0.55); }
+.links { display: flex; gap: 34px; font-size: 13px; color: rgba(242, 238, 228, 0.82); }
+.links a:hover { color: #fff; }
+.burger {
+  width: 44px; height: 44px; margin-right: -12px; padding: 0; border: 0; background: none; cursor: pointer;
+  display: none; align-items: center; justify-content: center; flex-direction: column; gap: 6px;
+}
+.burger span { width: 17px; height: 1.5px; background: var(--ink); transition: transform .35s ease; }
+.menu-open .burger span:first-child { transform: translateY(3.75px) rotate(45deg); }
+.menu-open .burger span:last-child { transform: translateY(-3.75px) rotate(-45deg); }
+
+/* 펼친 메뉴: 큰 글씨 목록 */
+.panel {
+  position: fixed; inset: 0 0 auto 0; z-index: 15;
+  padding: calc(var(--nav) + 44px) 0 68px;
+  background: rgba(10, 11, 18, 0.9);
+  -webkit-backdrop-filter: saturate(180%) blur(28px);
+  backdrop-filter: saturate(180%) blur(28px);
+  opacity: 0; visibility: hidden; transform: translateY(-12px);
+  transition: opacity .35s ease, transform .45s cubic-bezier(.2,.7,.2,1), visibility 0s .45s;
+}
+.menu-open .panel { opacity: 1; visibility: visible; transform: none; transition-delay: 0s; }
+.panel-in { max-width: var(--wrap); margin: 0 auto; padding: 0 22px; display: grid; grid-template-columns: 1.6fr 1fr 1fr; gap: 40px; }
+.panel h6 { margin: 0 0 14px; font-size: 12px; font-weight: 400; color: var(--dim); }
+.panel .big a { display: block; font-size: 28px; font-weight: 600; letter-spacing: -0.02em; line-height: 1.45; }
+.panel .small a { display: block; font-size: 13px; font-weight: 600; line-height: 2.3; }
+.scrim { position: fixed; inset: 0; z-index: 10; background: rgba(7, 8, 15, 0.5); opacity: 0; visibility: hidden; transition: opacity .35s ease, visibility 0s .35s; }
+.menu-open .scrim { opacity: 1; visibility: visible; transition-delay: 0s; }
+.menu-open main { filter: blur(14px); }
+main { transition: filter .35s ease; }
+
+/* 단추와 글 링크 */
+.btns { display: flex; justify-content: center; flex-wrap: wrap; gap: 14px; margin-top: 22px; }
+.btn { display: inline-flex; align-items: center; min-height: 44px; padding: 0 22px; border-radius: 980px; font-size: 17px; font-weight: 500; letter-spacing: -0.01em; border: 1px solid var(--flame); }
+.btn.fill { background: var(--flame); color: var(--flame-ink); }
+.btn.line { color: var(--flame); }
+.more { color: var(--flame); font-size: 19px; font-weight: 500; letter-spacing: -0.01em; }
+.more::after { content: " ↗"; font-size: 0.86em; }
+
+/* 장면 공통 */
+.tile { position: relative; background: var(--night); margin-top: 12px; overflow: hidden; text-align: center; }
+.tile:first-of-type { margin-top: 0; }
+.head { padding: 76px 24px 0; }
+.eyebrow { display: inline-block; margin-bottom: 10px; font-size: 17px; font-weight: 600; color: var(--flame); letter-spacing: -0.01em; }
+h1, h2, h3 { margin: 0; font-weight: 700; letter-spacing: -0.03em; line-height: 1.08; }
+.tile h2 { font-size: clamp(40px, 5.4vw, 64px); }
+.sub { margin: 12px auto 0; max-width: 30em; font-size: clamp(19px, 2.1vw, 24px); font-weight: 400; letter-spacing: -0.015em; line-height: 1.38; color: var(--ink); }
+.pic { margin: 28px auto 0; width: min(620px, 100%); -webkit-mask-image: radial-gradient(closest-side, #000 74%, transparent 100%); mask-image: radial-gradient(closest-side, #000 74%, transparent 100%); }
+.pic img { width: 100%; height: auto; }
+
+/* 첫 장면: 문 */
+.hero { min-height: 100svh; padding-top: var(--nav); display: grid; align-items: center; text-align: left; }
+.hero-in { width: 100%; max-width: 1320px; margin: 0 auto; padding: 24px 40px 40px; display: grid; grid-template-columns: 1fr minmax(320px, 540px) 1fr; align-items: center; gap: 8px; }
+.hero h1 { font-size: clamp(60px, 7.8vw, 118px); line-height: 1.02; letter-spacing: -0.045em; }
+.hero h1 span { display: block; }
+.door { position: relative; aspect-ratio: 1; -webkit-mask-image: radial-gradient(closest-side, #000 72%, transparent 100%); mask-image: radial-gradient(closest-side, #000 72%, transparent 100%); }
+.door img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.door .on { opacity: 0; transition: opacity 1.6s ease; }
+.lit .door .on { opacity: 1; }
+.say { text-align: right; }
+.say h2 { font-size: clamp(24px, 2.5vw, 34px); line-height: 1.24; letter-spacing: -0.03em; }
+.say .more { display: block; margin-top: 12px; }
+.say .more:first-of-type { margin-top: 26px; }
+.state { display: inline-flex; align-items: center; gap: 9px; margin-top: 30px; font-size: 14px; color: var(--dim); }
+.state i { width: 7px; height: 7px; border-radius: 50%; background: var(--faint); transition: background 1.2s ease, box-shadow 1.2s ease; }
+.lit .state { color: var(--ink); }
+.lit .state i { background: var(--flame); box-shadow: 0 0 10px 2px rgba(243, 178, 90, 0.55); }
+.state .when-on, .lit .state .when-off { display: none; }
+.lit .state .when-on { display: inline; }
+.hero .m-only { display: none; }
+
+/* 두 칸 장면 */
+.duo { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+.duo .tile { margin-top: 0; }
+.duo .tile h2 { font-size: clamp(32px, 3.5vw, 44px); }
+.duo .sub { font-size: clamp(17px, 1.6vw, 21px); }
+.duo .pic { width: min(520px, 100%); margin-top: 18px; }
+
+/* 카드 선반 */
+.shelf { text-align: left; padding: 84px 0 92px; }
+.shelf-in { max-width: var(--wrap); margin: 0 auto; padding: 0 22px; }
+.shelf h2 { font-size: clamp(28px, 3.2vw, 40px); letter-spacing: -0.03em; line-height: 1.2; }
+.shelf h2 em { font-style: normal; color: var(--faint); }
+.cards { display: flex; gap: 20px; margin-top: 36px; padding: 0 22px 6px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; max-width: calc(var(--wrap)); margin-left: auto; margin-right: auto; }
+.cards::-webkit-scrollbar { display: none; }
+.card { flex: 0 0 248px; min-height: 300px; padding: 28px; border-radius: 28px; background: var(--card); display: flex; flex-direction: column; scroll-snap-align: start; }
+.card small { font-size: 13px; font-weight: 600; color: var(--dim); }
+.card b { margin-top: 8px; font-size: 30px; font-weight: 700; letter-spacing: -0.035em; line-height: 1.16; }
+.card p { margin: auto 0 0; font-size: 15px; line-height: 1.5; color: var(--dim); }
+
+/* 듣는 사람 */
+.who .head { padding-bottom: 88px; }
+.who .note { margin: 22px auto 0; max-width: 28em; font-size: 15px; color: var(--dim); }
+
+/* 예약: 방 그림 위에 글 */
+.book { text-align: left; min-height: min(72vw, 620px); display: grid; align-items: center; }
+.book .bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 78% 50%; }
+.book::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, var(--night) 0%, rgba(7,8,15,.86) 30%, rgba(7,8,15,0) 62%); }
+.book-in { position: relative; z-index: 1; width: 100%; max-width: var(--wrap); margin: 0 auto; padding: 64px 22px; }
+.book h2 { font-size: clamp(36px, 4.6vw, 56px); }
+.book .sub { margin-left: 0; max-width: 17em; }
+.book .btns { justify-content: flex-start; }
+.soon { margin-top: 18px; font-size: 14px; color: var(--dim); }
+
+/* 아래쪽 정보 */
+footer { max-width: var(--wrap); margin: 0 auto; padding: 22px 22px 34px; font-size: 12px; line-height: 1.6; color: var(--dim); }
+footer p { margin: 0 0 9px; }
+footer strong { color: var(--ink); font-weight: 600; }
+.cols { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin: 18px 0; padding: 18px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.cols h6 { margin: 0 0 6px; font-size: 12px; font-weight: 600; color: var(--ink); }
+.cols a { display: block; line-height: 2.1; }
+.legal { display: flex; flex-wrap: wrap; gap: 6px 22px; justify-content: space-between; }
+.legal nav { display: flex; gap: 18px; }
+
+/* 내려갈 때 떠오르기 */
+.rv { opacity: 0; transform: translateY(26px); transition: opacity 1s ease, transform 1.1s cubic-bezier(.2,.7,.2,1); }
+.rv.in { opacity: 1; transform: none; }
+.rv.d1 { transition-delay: .12s; } .rv.d2 { transition-delay: .24s; }
+
+@media (max-width: 833px) {
+  .links { display: none; }
+  .burger { display: flex; }
+  .panel { padding: calc(var(--nav) + 26px) 0 44px; min-height: 100svh; }
+  .panel-in { grid-template-columns: 1fr 1fr; gap: 34px 20px; }
+  .panel .big { grid-column: 1 / -1; }
+  .panel .big a { font-size: 28px; line-height: 1.5; }
+  .hero { text-align: center; }
+  .hero-in { grid-template-columns: 1fr; padding: 28px 22px 34px; gap: 0; }
+  .hero h1 { font-size: clamp(46px, 14vw, 60px); line-height: 1.08; }
+  .hero h1 span { display: inline; }
+  .hero .m-only { display: block; }
+  .hero .state.m-only { display: flex; justify-content: center; }
+  .hero .btns.m-only { display: flex; }
+  .hero .d-only { display: none; }
+  .hero .say { text-align: center; }
+  .hero .door { order: 3; width: min(340px, 88%); margin: 6px auto 0; }
+  .hero .say { order: 2; }
+  .state { margin-top: 0; margin-bottom: 14px; }
+  .head { padding: 58px 22px 0; }
+  .duo { grid-template-columns: 1fr; }
+  .shelf { padding: 60px 0 64px; }
+  .card { flex-basis: 228px; min-height: 272px; }
+  .book { min-height: 560px; align-items: end; }
+  .book .bg { object-position: 74% 30%; height: 62%; }
+  .book::after { background: linear-gradient(180deg, rgba(7,8,15,0) 30%, var(--night) 62%); }
+  .book-in { padding: 0 22px 54px; }
+  .cols { grid-template-columns: 1fr 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .rv, .door .on, .panel, .scrim, main, .burger span { transition: none; }
+  .rv { opacity: 1; transform: none; }
+}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-in">
+    <a class="brand" href="#top"><i aria-hidden="true"></i>밤의 작은 상담소</a>
+    <nav class="links" aria-label="둘러보기">
+      <a href="#about">소개</a><a href="#steps">이용 순서</a><a href="#promise">약속</a><a href="#who">듣는 사람</a><a href="#book">예약</a>
+    </nav>
+    <button class="burger" type="button" aria-label="메뉴" aria-expanded="false"><span></span><span></span></button>
+  </div>
+</header>
+
+<div class="panel" id="panel">
+  <div class="panel-in">
+    <div class="big">
+      <h6>둘러보기</h6>
+      <a href="#about">소개</a><a href="#steps">이용 순서</a><a href="#promise">약속</a><a href="#who">듣는 사람</a><a href="#book">예약</a>
+    </div>
+    <div class="small">
+      <h6>바로 가기</h6>
+      <a href="#">카카오톡 채널</a><a href="#">문의 메일</a><a href="#">이용 안내</a>
+    </div>
+    <div class="small">
+      <h6>약속과 방침</h6>
+      <a href="#">개인정보 처리방침</a><a href="#">이용약관</a>
+    </div>
+  </div>
+</div>
+<div class="scrim"></div>
+
+<main id="top">
+
+  <section class="tile hero">
+    <div class="hero-in">
+      <div>
+        <p class="state m-only"><i aria-hidden="true"></i><span class="when-off">지금은 문이 닫혀 있습니다</span><span class="when-on">지금 불이 켜져 있습니다</span></p>
+        <h1><span>밤의 </span><span>작은 </span><span>상담소</span></h1>
+      </div>
+      <div class="door" aria-hidden="true">
+        <img class="off" src="img/door-off.webp" alt="" width="900" height="900">
+        <img class="on" src="img/door-on.webp" alt="" width="900" height="900">
+      </div>
+      <div class="say">
+        <h2 class="d-only">가만히 들어줄 사람이<br>필요한 밤.</h2>
+        <p class="sub m-only">가만히 들어줄 사람이 필요한 밤.</p>
+        <div class="d-only">
+          <a class="more" href="#book">예약 문의</a>
+          <a class="more" href="#steps">이용 순서 보기</a>
+          <p class="state"><i aria-hidden="true"></i><span class="when-off">지금은 문이 닫혀 있습니다</span><span class="when-on">지금 불이 켜져 있습니다</span></p>
+        </div>
+        <div class="btns m-only"><a class="btn fill" href="#book">예약 문의</a><a class="btn line" href="#about">더 알아보기</a></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="tile" id="about">
+    <div class="head">
+      <h2 class="rv">한 번에 한 사람.</h2>
+      <p class="sub rv d1">채팅과 타로로, 한 사람의 이야기만 듣습니다.</p>
+      <div class="btns rv d2"><a class="btn fill" href="#steps">이용 순서</a><a class="btn line" href="#promise">약속 보기</a></div>
+    </div>
+    <figure class="pic rv"><img src="img/chairs.webp" alt="촛불 하나가 놓인 둥근 탁자와 마주 놓인 두 의자" width="1000" height="1000"></figure>
+  </section>
+
+  <div class="duo">
+    <section class="tile" id="steps">
+      <div class="head">
+        <h2 class="rv">문까지, 다섯 걸음.</h2>
+        <p class="sub rv d1">예약 문의부터 자리에 앉기까지.</p>
+        <div class="btns rv d2"><a class="btn line" href="#">이용 안내</a></div>
+      </div>
+      <figure class="pic rv"><img src="img/stones.webp" alt="불빛이 새어 나오는 문으로 이어진 디딤돌 다섯 개" width="1000" height="1000"></figure>
+    </section>
+    <section class="tile" id="promise">
+      <div class="head">
+        <h2 class="rv">끝나면 지워집니다.</h2>
+        <p class="sub rv d1">나눈 대화와 카드는 남지 않습니다.</p>
+        <div class="btns rv d2"><a class="btn line" href="#">약속 전체 보기</a></div>
+      </div>
+      <figure class="pic rv"><img src="img/promise.webp" alt="촛불과 쌓아 둔 카드, 모래시계" width="1000" height="1000"></figure>
+    </section>
+  </div>
+
+  <section class="tile shelf">
+    <div class="shelf-in"><h2 class="rv">알아 둘 것. <em>짧게, 네 가지.</em></h2></div>
+    <div class="cards rv d1">
+      <div class="card"><small>시간</small><b>한 번에<br>30분</b><p>밤 10시와 11시, 일주일에 세 번 엽니다.</p></div>
+      <div class="card"><small>나이</small><b>만 15세<br>이상</b><p>미성년자는 예약할 때 미리 동의를 받습니다.</p></div>
+      <div class="card"><small>값</small><b>무료</b><p>예약과 상담에 비용이 들지 않습니다.</p></div>
+      <div class="card"><small>기록</small><b>이름을<br>묻지 않음</b><p>회원가입이 없고, 대화는 끝나면 지워집니다.</p></div>
+    </div>
+  </section>
+
+  <section class="tile who" id="who">
+    <div class="head">
+      <span class="eyebrow rv">듣는 사람</span>
+      <h2 class="rv">present.</h2>
+      <p class="sub rv d1">충북대학교 심리학과 졸업.<br>타로 경력 1년 이상.</p>
+      <p class="note rv d2">AI가 대신 답하지 않습니다. 이곳은 고민을 나누는 자리이며, 치료나 진단을 대신하지 않습니다.</p>
+    </div>
+  </section>
+
+  <section class="tile book" id="book">
+    <img class="bg" src="img/room.webp" alt="" width="1600" height="900">
+    <div class="book-in">
+      <h2 class="rv">예약은<br>카카오톡 채널에서.</h2>
+      <p class="sub rv d1">「present의 밤」으로 문의하면 약속한 시간에 초대 링크를 보내 드립니다.</p>
+      <div class="btns rv d2"><a class="btn fill" href="#">채널로 가기</a><a class="btn line" href="#">이용 안내</a></div>
+      <p class="soon rv d2">예약은 곧 열립니다.</p>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p><strong>지금 많이 힘들다면 기다리지 말고 연락하세요.</strong> 자살예방상담전화 109, 청소년상담전화 1388, 긴급 신고 119 · 112</p>
+  <p>이곳은 고민을 나누는 자리이며, 치료나 진단을 대신하지 않습니다.</p>
+  <div class="cols">
+    <div><h6>둘러보기</h6><a href="#about">소개</a><a href="#steps">이용 순서</a><a href="#promise">약속</a></div>
+    <div><h6>예약과 문의</h6><a href="#">카카오톡 채널</a><a href="#">info@presentnight.com</a></div>
+    <div><h6>안내</h6><a href="#">이용 안내</a><a href="#">자주 묻는 질문</a></div>
+    <div><h6>방침</h6><a href="#">개인정보 처리방침</a><a href="#">이용약관</a></div>
+  </div>
+  <div class="legal"><span>© 2026 밤의 작은 상담소</span><nav><a href="#">개인정보 처리방침</a><a href="#">이용약관</a><a href="#">문의</a></nav></div>
+</footer>
+
+<script>
+const root = document.documentElement;
+const burger = document.querySelector('.burger');
+const setMenu = (open) => { root.classList.toggle('menu-open', open); burger.setAttribute('aria-expanded', String(open)); };
+burger.addEventListener('click', () => setMenu(!root.classList.contains('menu-open')));
+document.querySelector('.scrim').addEventListener('click', () => setMenu(false));
+document.querySelectorAll('.panel a').forEach((a) => a.addEventListener('click', () => setMenu(false)));
+// 시안에서는 주소 끝의 ?lit 과 ?menu 로 상태를 바꿔 본다. 실제 화면에서는 문 상태가 살아 있는 값으로 바뀐다.
+const q = new URLSearchParams(location.search);
+if (q.has('lit')) root.classList.add('lit');
+if (q.has('menu')) setMenu(true);
+const seen = new IntersectionObserver((entries) => {
+  for (const e of entries) if (e.isIntersecting) { e.target.classList.add('in'); seen.unobserve(e.target); }
+}, { threshold: 0.18 });
+document.querySelectorAll('.rv').forEach((el) => seen.observe(el));
+</script>
+</body>
+</html>
