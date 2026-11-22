@@ -400,13 +400,31 @@
   padding-top: calc(var(--site-nav) + 20px);
 }
 
-.home.page > .plate:first-child,
-.home.page > .sheet:first-child {
+.home.page > .plate,
+.home.page > .sheet.host {
   margin-top: 0;
 }
 
-.home.page > .sheet:first-child {
+.home.page > .sheet.host {
   padding-top: clamp(24px, 4vw, 56px);
+}
+
+/* 그림 없는 화면의 머리: 큰 제목과 한 줄 */
+.home .page-head {
+  padding: clamp(24px, 4vw, 56px) calc(var(--edge) + clamp(8px, 2vw, 32px)) 0;
+}
+
+.home .page-head h1 {
+  font-size: clamp(44px, 5.2vw, 76px);
+}
+
+.home .page-head .lead {
+  margin-top: 16px;
+}
+
+/* 화면 탭: 휴대폰에서만 보인다. PC에서는 위쪽 메뉴가 같은 일을 한다 */
+.home .page-tabs {
+  display: none;
 }
 
 .home .onward {
@@ -414,9 +432,158 @@
   padding: 0 calc(var(--edge) + clamp(8px, 2vw, 32px)) clamp(48px, 6vw, 88px);
 }
 
-.home .say {
-  padding-bottom: clamp(72px, 9vw, 132px);
+/* 표의 마지막 구역 아래에는 맨 아래 정보까지 빈 자리를 둔다 */
+.home .sheet.last {
+  margin-bottom: clamp(72px, 9vw, 132px);
 }
+
+/* 둘러보기: 각 화면으로 가는 목록. 줄 전체를 누를 수 있다 */
+.home .index li {
+  border-top: 1px solid var(--line);
+}
+
+.home .index li:last-child {
+  border-bottom: 1px solid var(--line);
+}
+
+.home .index a {
+  min-height: 76px;
+  padding: 16px 0;
+  display: grid;
+  grid-template-columns: clamp(150px, 15vw, 210px) 1fr;
+  align-items: baseline;
+  column-gap: 16px;
+}
+
+.home .index strong {
+  white-space: nowrap;
+  font: 800 clamp(24px, 2.4vw, 32px) / 1.3 var(--display);
+  letter-spacing: -0.035em;
+}
+
+.home .index span {
+  font-size: clamp(16px, 1.3vw, 18px);
+  line-height: 1.5;
+  color: var(--dim);
+}
+
+.home .index a:hover span {
+  color: var(--ink);
+}
+
+/* 자주 묻는 질문: 질문을 누르면 답이 펼쳐진다 */
+.home .faq details {
+  border-top: 1px solid var(--line);
+}
+
+.home .faq details:last-of-type {
+  border-bottom: 1px solid var(--line);
+}
+
+.home .faq summary {
+  position: relative;
+  min-height: 60px;
+  padding: 16px 44px 16px 0;
+  display: flex;
+  align-items: center;
+  list-style: none;
+  cursor: pointer;
+  font-size: clamp(18px, 1.5vw, 21px);
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  line-height: 1.4;
+}
+
+.home .faq summary::-webkit-details-marker {
+  display: none;
+}
+
+/* 펼침 표시: 닫혀 있으면 더하기, 열리면 빼기 */
+.home .faq summary::before,
+.home .faq summary::after {
+  content: "";
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  width: 15px;
+  height: 1.5px;
+  background: var(--dim);
+}
+
+.home .faq summary::after {
+  transform: rotate(90deg);
+}
+
+.home .faq details[open] summary::after {
+  transform: none;
+}
+
+.home .faq details p {
+  max-width: 34em;
+  padding: 0 44px 22px 0;
+  font-size: clamp(16px, 1.3vw, 18px);
+  line-height: 1.7;
+  color: var(--dim);
+  text-wrap: pretty;
+}
+
+.home .faq .link {
+  margin-top: 14px;
+}
+
+/* 이용 순서: 번호가 붙은 상자 */
+.home .steps {
+  display: grid;
+  gap: 10px;
+  counter-reset: step;
+}
+
+.home .steps li {
+  counter-increment: step;
+  min-height: 76px;
+  padding: 18px 22px;
+  display: grid;
+  grid-template-columns: 2.2em 1fr;
+  align-items: center;
+  border-radius: 18px;
+  background: var(--tile);
+  font-size: clamp(17px, 1.4vw, 20px);
+  letter-spacing: -0.01em;
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+
+.home .steps li::before {
+  content: counter(step);
+  font: 800 1.5em / 1 var(--display);
+  color: var(--dim);
+}
+
+.home .fine {
+  max-width: 30em;
+  margin-top: 14px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--dim);
+  text-wrap: pretty;
+}
+
+/* 글 속의 링크: 밑줄 친 상아색. 누르는 자리는 44px */
+.home a.inline {
+  display: inline-block;
+  margin: -12px 0;
+  padding: 12px 0;
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  text-decoration-color: var(--faint);
+}
+
+.home a.inline:hover {
+  text-decoration-color: var(--ink);
+}
+
 
 @media (max-width: 833px) {
   .home {
@@ -513,6 +680,60 @@
   .home .sheet {
     grid-template-columns: minmax(0, 1fr);
     padding: 0 22px;
+  }
+
+  .home.page {
+    padding-top: var(--site-nav);
+  }
+
+  /* 화면 탭: 옆으로 밀어 볼 수 있는 한 줄 */
+  .home .page-tabs {
+    margin: 0 0 14px;
+    padding: 0 14px;
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .home .page-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .home .page-tabs a {
+    flex: none;
+    min-height: var(--tap);
+    padding: 0 15px;
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--line);
+    border-radius: 980px;
+    font-size: 15px;
+    color: var(--dim);
+    white-space: nowrap;
+  }
+
+  .home .page-tabs a[aria-current="page"] {
+    border-color: var(--ink);
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .home .page-head {
+    padding: 18px 22px 0;
+  }
+
+  .home .page-head h1 {
+    font-size: 40px;
+  }
+
+  .home .index a {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 2px;
+  }
+
+  .home .steps li {
+    padding: 16px 18px;
   }
 
   .home .sheet :is(h1, h2) {

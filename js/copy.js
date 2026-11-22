@@ -76,6 +76,7 @@ export const COPY = {
       { label: '예약', href: 'book' },
     ],
     reserve: { label: '예약 문의', href: 'book' },
+    tabs: '화면 바로 가기',
     quick: '바로 가기',
     info: '안내',
     policy: '약속과 방침',

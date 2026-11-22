@@ -33,24 +33,24 @@
 <script type="importmap">
 {
   "imports": {
-    "./js/cards.js": "./js/cards.js?v=15",
-    "./js/chat.js": "./js/chat.js?v=15",
-    "./js/copy.js": "./js/copy.js?v=15",
-    "./js/firebase.js": "./js/firebase.js?v=15",
-    "./js/session.js": "./js/session.js?v=15",
-    "./js/site.js": "./js/site.js?v=15",
-    "./js/sound.js": "./js/sound.js?v=15",
-    "./js/tarot.js": "./js/tarot.js?v=15"
+    "./js/cards.js": "./js/cards.js?v=16",
+    "./js/chat.js": "./js/chat.js?v=16",
+    "./js/copy.js": "./js/copy.js?v=16",
+    "./js/firebase.js": "./js/firebase.js?v=16",
+    "./js/session.js": "./js/session.js?v=16",
+    "./js/site.js": "./js/site.js?v=16",
+    "./js/sound.js": "./js/sound.js?v=16",
+    "./js/tarot.js": "./js/tarot.js?v=16"
   }
 }
 </script>
-<link rel="stylesheet" href="css/tokens.css?v=15">
-<link rel="stylesheet" href="css/base.css?v=15">
-<link rel="stylesheet" href="css/door.css?v=15">
-<link rel="stylesheet" href="css/site.css?v=15">
-<link rel="stylesheet" href="css/home.css?v=15">
-<link rel="stylesheet" href="css/room.css?v=15">
-<link rel="stylesheet" href="css/tarot.css?v=15">
+<link rel="stylesheet" href="css/tokens.css?v=16">
+<link rel="stylesheet" href="css/base.css?v=16">
+<link rel="stylesheet" href="css/door.css?v=16">
+<link rel="stylesheet" href="css/site.css?v=16">
+<link rel="stylesheet" href="css/home.css?v=16">
+<link rel="stylesheet" href="css/room.css?v=16">
+<link rel="stylesheet" href="css/tarot.css?v=16">
 </head>
 <body>
 
@@ -64,12 +64,12 @@
     <!-- 세계: PC는 넓은 그림, 휴대폰은 세로 그림. 불 꺼진 그림 위에 불 켜진 그림이 겹친다. -->
     <div class="world" aria-hidden="true">
       <picture class="off">
-        <source media="(min-width: 834px)" srcset="assets/home/world-wide-off.webp?v=15" width="1672" height="941">
-        <img src="assets/home/world-tall-off.webp?v=15" alt="" width="1000" height="1500">
+        <source media="(min-width: 834px)" srcset="assets/home/world-wide-off.webp?v=16" width="1672" height="941">
+        <img src="assets/home/world-tall-off.webp?v=16" alt="" width="1000" height="1500">
       </picture>
       <picture class="on">
-        <source media="(min-width: 834px)" srcset="assets/home/world-wide-on.webp?v=15" width="1672" height="941">
-        <img src="assets/home/stones.webp?v=15" alt="" width="1000" height="1500">
+        <source media="(min-width: 834px)" srcset="assets/home/world-wide-on.webp?v=16" width="1672" height="941">
+        <img src="assets/home/stones.webp?v=16" alt="" width="1000" height="1500">
       </picture>
     </div>
     <p class="state" role="status"><i aria-hidden="true"></i><span class="js-state"></span></p>
@@ -82,13 +82,64 @@
     <p class="aside js-note"></p>
   </section>
 
+  <!-- 대문의 아래쪽: 각 화면으로 가는 목록, 자주 묻는 질문, 여는 때와 문의.
+       같은 사실이 about, guide, book에도 있으니 하나를 바꾸면 함께 고친다. -->
+  <section class="sheet index">
+    <h2>둘러보기</h2>
+    <ul>
+      <li><a href="about"><strong>소개</strong><span>한 번에 한 사람의 이야기만 듣습니다.</span></a></li>
+      <li><a href="guide"><strong>이용 안내</strong><span>예약부터 이야기가 끝날 때까지, 다섯 걸음.</span></a></li>
+      <li><a href="promise"><strong>약속</strong><span>나눈 이야기는 끝나면 지워집니다.</span></a></li>
+      <li><a href="host"><strong>듣는 사람</strong><span>이 방을 연 present의 글.</span></a></li>
+      <li><a href="book"><strong>예약</strong><span>카카오톡 채널 「present의 밤」에서 받습니다.</span></a></li>
+    </ul>
+  </section>
+
+  <section class="sheet faq">
+    <h2>자주 묻는 질문</h2>
+    <div>
+      <details>
+        <summary>정말 사람이 듣습니까</summary>
+        <p>present 한 사람이 직접 듣고 답합니다. AI가 대신 답하지 않습니다. 미리 써 둔 안내문은 present의 말과 구분해 보입니다.</p>
+      </details>
+      <details>
+        <summary>나눈 이야기가 남습니까</summary>
+        <p>상담이 끝나면 대화와 카드를 서버에서 지웁니다. 상담 이력을 만들지 않습니다. 자세한 내용은 <a class="inline" href="privacy">개인정보 처리방침</a>에 있습니다.</p>
+      </details>
+      <details>
+        <summary>회원가입이 필요합니까</summary>
+        <p>필요 없습니다. 이름과 연락처를 묻지 않습니다. 예약할 때 별명과 태어난 해만 받습니다.</p>
+      </details>
+      <details>
+        <summary>타로를 몰라도 됩니까</summary>
+        <p>됩니다. 카드는 present가 펼치고 손님은 고르기만 합니다. 타로 없이 이야기만 나눌 수도 있습니다.</p>
+      </details>
+      <details>
+        <summary>비용이 있습니까</summary>
+        <p>무료입니다.</p>
+      </details>
+      <a class="link" href="guide?go=faq">자주 묻는 질문 전체 보기</a>
+    </div>
+  </section>
+
+  <section class="sheet facts last">
+    <h2>여는 때와 문의</h2>
+    <dl>
+      <div><dt>여는 때</dt><dd>일주일에 세 번, 밤 10시와 11시</dd></div>
+      <div><dt>길이</dt><dd>한 번에 30분, 한 사람씩</dd></div>
+      <div><dt>값</dt><dd>무료</dd></div>
+      <div><dt>예약</dt><dd>카카오톡 채널 「present의 밤」. <a class="inline" href="book">예약 안내</a></dd></div>
+      <div><dt>문의</dt><dd><a class="inline" href="mailto:info@presentnight.com">info@presentnight.com</a></dd></div>
+    </dl>
+  </section>
+
 </main>
 
 <!-- 문 화면. 아래 문구는 화면이 뜨는 동안만 보이고, 곧 js/copy.js의 문구로 바뀐다. -->
 <main id="door-view" class="door-screen">
   <div id="door-pic" class="door-pic" aria-hidden="true">
-    <img class="off" src="assets/door-off.jpg?v=15" alt="" width="640" height="640">
-    <img class="on" src="assets/door-on.jpg?v=15" alt="" width="640" height="640">
+    <img class="off" src="assets/door-off.jpg?v=16" alt="" width="640" height="640">
+    <img class="on" src="assets/door-on.jpg?v=16" alt="" width="640" height="640">
   </div>
   <p class="name">밤의 작은 상담소</p>
   <h1 id="door-title">문을 살피는 중이에요</h1>
@@ -128,6 +179,6 @@
 </main>
 
 <noscript><p class="lead" style="margin:24px auto;text-align:center">이 페이지는 자바스크립트를 켜야 열려요.</p></noscript>
-<script type="module" src="js/guest.js?v=15"></script>
+<script type="module" src="js/guest.js?v=16"></script>
 </body>
 </html>

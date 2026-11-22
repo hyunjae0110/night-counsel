@@ -95,6 +95,21 @@ export function mountSite() {
     reserveSoon.hidden = open;
   }
 
+  // 화면 탭: 휴대폰에서 메뉴를 펼치지 않고 옆 화면으로 바로 간다(나눈 화면에만 붙인다).
+  const page = document.querySelector('main.home.page');
+  if (page && S.pages.some((item) => item.href === here)) {
+    const tabs = make('nav', 'page-tabs');
+    tabs.setAttribute('aria-label', S.tabs);
+    tabs.append(
+      ...S.pages.map((item) => {
+        const a = pageLink(item);
+        if (item.href === here) a.setAttribute('aria-current', 'page');
+        return a;
+      })
+    );
+    page.prepend(tabs);
+  }
+
   document.body.prepend(nav, panel, scrim);
   document.body.append(foot);
 
