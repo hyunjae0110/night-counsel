@@ -14,6 +14,7 @@
 대문은 `index.html`의 `#home-view`(초대 링크 없이 온 사람에게만 보인다), 문서 화면은 `guide.html`·`privacy.html`·`terms.html`이다. 메뉴와 맨 아래 정보는 `js/site.js`가 붙인다. 예약 채널은 카카오톡 채널 「present의 밤」이다. 주소는 `js/copy.js`의 `home.reserve.url`에 있고, 사용자가 열자고 하면 `home.reserve.open`을 참으로 바꾼다(그때 채널 링크와 예약 단추가 보인다).
 사이트 주소는 `https://presentnight.com`이다(가비아에서 산 주소를 GitHub Pages에 연결). 저장소 맨 위의 `CNAME` 파일은 이 연결에 쓰이니 지우지 않는다.
 문 화면의 문은 그림 두 장(`assets/door-off.jpg`, `assets/door-on.jpg`)이다. 두 장은 같은 자리·같은 크기로 잘라야 겹칠 때 어긋나지 않는다. 채널 사진과 홍보에는 문 대신 문 안쪽 방 그림을 쓴다.
+대문 「듣는 사람」의 글은 present(사용자)가 직접 쓴 글이다. 오탈자와 띄어쓰기 말고는 고치지 않고, 문장을 대신 쓰지 않는다. 그 아래 서명은 사용자의 손글씨를 딴 선 그림이다(`assets/hand/sign.svg`를 `index.html`에 그대로 넣었다). 손글씨는 대문에서 이 한 곳에만 쓴다.
 카드 그림은 자체 선 그림을 밑그림으로 사용자가 AI 도구에서 채색한 78장이다(`assets/cards/번호.webp`, 600×800). 선 그림 원본은 `assets/cards/line/`에 있다. 그림을 바꿀 때는 같은 번호·같은 크기로 넣는다. 그림 파일을 불러오지 못한 카드는 번호와 이름만 있는 임시 모양으로 보인다.
 단계가 바뀌면 이 문단을 고친다.
 

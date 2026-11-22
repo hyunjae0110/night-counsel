@@ -356,21 +356,41 @@
   text-wrap: pretty;
 }
 
-.home .host-name {
-  font: 700 clamp(64px, 9.4vw, 132px) / 0.95 var(--display);
+/* 듣는 사람: present가 직접 쓴 글과 손글씨 서명 */
+.home .host .letter {
+  max-width: 33em;
+  font-family: var(--display);
+  font-size: clamp(18px, 1.45vw, 20px);
+  line-height: 1.95;
   letter-spacing: -0.01em;
+  word-break: keep-all;
+  text-wrap: pretty;
+}
+
+.home .host .letter p + p {
+  margin-top: 1.15em;
+}
+
+.home .host .sign {
+  margin-top: 34px;
+  line-height: 0;
+}
+
+.home .host .sign svg {
+  display: block;
+  width: auto;
+  height: 64px;
 }
 
 .home .host .career {
-  margin-top: 30px;
-  font-size: clamp(19px, 1.7vw, 23px);
-  line-height: 1.5;
-  letter-spacing: -0.015em;
+  margin-top: 40px;
+  font-size: 16px;
+  line-height: 1.6;
 }
 
 .home .host .fine {
   max-width: 26em;
-  margin-top: 16px;
+  margin-top: 6px;
   font-size: 15px;
   line-height: 1.6;
   color: var(--dim);
@@ -538,8 +558,13 @@
     grid-template-columns: 5.6em 1fr;
   }
 
-  .home .host-name {
-    font-size: clamp(60px, 19vw, 84px);
+  .home .host .letter {
+    font-size: 17px;
+    line-height: 1.9;
+  }
+
+  .home .host .sign svg {
+    height: 56px;
   }
 
   .home .book {
