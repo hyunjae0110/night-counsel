@@ -1,4 +1,7 @@
-/* 대문: 초대 링크 없이 온 사람이 보는 긴 화면. 한 화면에 한 장면. */
+/* 대문: 초대 링크 없이 온 사람이 보는 긴 화면.
+   그림이 있는 장면(.scene)은 장면마다 그림의 자리와 크기가 다르고,
+   정보(.sheet)는 왼쪽에 이름, 오른쪽에 내용인 표다.
+   저절로 움직이는 것은 문에 불이 켜지는 것 하나뿐이다. */
 
 /* 화면이 뜨는 동안 엉뚱한 쪽이 잠깐 보이지 않게 한다(index.html 머리의 짧은 스크립트가 고른다). */
 .pre-home #door-view,
@@ -7,7 +10,10 @@
 }
 
 .home {
-  background: var(--gap);
+  --edge: max(40px, calc((100vw - 1240px) / 2));
+  --space: clamp(110px, 15vw, 210px);
+  padding-bottom: 0;
+  background: var(--night);
   color: var(--ink);
 }
 
@@ -21,62 +27,31 @@
   margin: 0;
   font-family: var(--loud);
   font-weight: 700;
-  letter-spacing: -0.03em;
-  line-height: 1.08;
+  letter-spacing: -0.035em;
+  line-height: 1.06;
+  text-wrap: balance;
 }
 
-.home p {
+.home p,
+.home figure,
+.home ol,
+.home ul,
+.home dl,
+.home dd {
   margin: 0;
 }
 
-/* 장면 공통 */
-.home .tile {
-  position: relative;
-  margin-top: 12px;
-  background: var(--night);
-  overflow: hidden;
-  text-align: center;
+.home ol,
+.home ul {
+  padding: 0;
+  list-style: none;
 }
 
-.home .tile:first-child {
-  margin-top: 0;
-}
-
-.home .head {
-  padding: 76px 24px 0;
-}
-
-.home .eyebrow {
-  display: inline-block;
-  margin-bottom: 10px;
-  font-size: 17px;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  color: var(--flame);
-}
-
-.home .tile h2 {
-  font-size: clamp(40px, 5.4vw, 64px);
-}
-
-.home .sub {
-  max-width: 30em;
-  margin: 12px auto 0;
-  font-size: clamp(19px, 2.1vw, 24px);
-  letter-spacing: -0.015em;
-  line-height: 1.38;
-}
-
-.home .pic {
-  width: min(620px, 100%);
-  margin: 28px auto 0;
-  -webkit-mask-image: radial-gradient(closest-side, #000 74%, transparent 100%);
-  mask-image: radial-gradient(closest-side, #000 74%, transparent 100%);
-}
-
-.home .pic img {
-  width: 100%;
-  height: auto;
+.home .acts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 26px;
 }
 
 /* 첫 장면: 문 */
@@ -85,7 +60,6 @@
   padding-top: var(--site-nav);
   display: grid;
   align-items: center;
-  text-align: left;
 }
 
 .home .hero-in {
@@ -134,24 +108,26 @@
 }
 
 .home .say {
-  text-align: right;
-}
-
-.home .say h2 {
-  font-size: clamp(24px, 2.5vw, 34px);
-  line-height: 1.24;
-}
-
-.home .say .links {
-  margin-top: 18px;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
+  text-align: right;
+}
+
+/* present의 목소리: 상담실과 같은 명조 */
+.home .voice {
+  font: 700 clamp(23px, 2.3vw, 31px) / 1.42 var(--display);
+  letter-spacing: 0.01em;
+}
+
+.home .hero .acts {
+  margin-top: 26px;
+  justify-content: flex-end;
 }
 
 .home .state {
   min-height: 24px;
-  margin-top: 22px;
+  margin-top: 30px;
   display: inline-flex;
   align-items: center;
   gap: 9px;
@@ -163,131 +139,252 @@
   color: var(--ink);
 }
 
-.home .note {
-  max-width: 22em;
-  margin: 6px 0 0 auto;
+.home .aside {
+  max-width: 21em;
+  margin-top: 6px;
   font-size: 14px;
-  line-height: 1.5;
+  line-height: 1.55;
   color: var(--dim);
+  text-wrap: balance;
 }
 
 .home .hero .m-only {
   display: none;
 }
 
-/* 두 칸 장면 */
-.home .duo {
-  margin-top: 12px;
+/* 그림이 있는 장면 */
+.home .scene {
+  margin-top: var(--space);
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  align-items: center;
+  column-gap: clamp(36px, 6vw, 104px);
 }
 
-.home .duo .tile {
-  margin-top: 0;
+.home .scene h2 {
+  font-size: clamp(44px, 5.8vw, 80px);
 }
 
-.home .duo .tile h2 {
-  font-size: clamp(32px, 3.5vw, 44px);
+.home .words p {
+  max-width: 23em;
+  margin-top: 22px;
+  font-size: clamp(18px, 1.45vw, 21px);
+  line-height: 1.62;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
 }
 
-.home .duo .sub {
-  font-size: clamp(17px, 1.6vw, 21px);
+.home .words h2 + p,
+.home .words h2 + ol,
+.home .words h2 + ul {
+  margin-top: 34px;
 }
 
-.home .duo .pic {
-  width: min(520px, 100%);
+.home .words .link {
   margin-top: 18px;
 }
 
-/* 카드 선반 */
-.home .shelf {
-  padding: 84px 0 92px;
-  text-align: left;
+/* 그림의 가장자리는 밤 색으로 덮어 바탕에 스며들게 한다 */
+.home .shot {
+  position: relative;
+  overflow: hidden;
 }
 
-.home .shelf-in {
-  max-width: var(--wrap);
-  margin: 0 auto;
-  padding: 0 22px;
+.home .shot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
 }
 
-.home .shelf h2 {
-  font-size: clamp(28px, 3.2vw, 40px);
-  line-height: 1.2;
+.home .shot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-.home .shelf h2 em {
-  font-style: normal;
-  color: var(--faint);
+/* 소개: 그림이 화면 왼쪽 끝까지 크게 나가고, 글은 오른쪽 아래에 놓인다 */
+.home .about {
+  grid-template-columns: minmax(0, 1.22fr) minmax(0, 1fr);
+  align-items: end;
 }
 
-.home .cards {
-  max-width: var(--wrap);
-  margin: 36px auto 0;
-  padding: 0 22px 6px;
-  display: flex;
-  gap: 20px;
-  list-style: none;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  scrollbar-width: none;
+.home .about .shot {
+  aspect-ratio: 11 / 10;
 }
 
-.home .cards::-webkit-scrollbar {
-  display: none;
+.home .about .shot::after {
+  background: linear-gradient(to right, transparent 56%, var(--night)), linear-gradient(to bottom, var(--night), transparent 18%, transparent 80%, var(--night));
 }
 
-.home .card {
-  flex: 0 0 248px;
-  min-height: 300px;
-  padding: 28px;
-  border-radius: 28px;
-  background: var(--tile);
-  display: flex;
-  flex-direction: column;
-  scroll-snap-align: start;
+.home .about .shot img {
+  transform: scale(1.5);
+  transform-origin: 40% 62%;
 }
 
-.home .card small {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--dim);
+.home .about .words {
+  padding: 0 var(--edge) 9% 0;
 }
 
-.home .card b {
-  margin-top: 8px;
-  font-size: 30px;
-  font-weight: 700;
-  letter-spacing: -0.035em;
-  line-height: 1.16;
+/* 이용 순서: 글이 넓고, 그림은 오른쪽에 세로로 좁게 선다 */
+.home .steps {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.56fr);
+  padding: 0 var(--edge);
+  align-items: start;
 }
 
-.home .card p {
-  margin-top: auto;
-  font-size: 15px;
+.home .steps .shot::after {
+  background: linear-gradient(to right, var(--night), transparent 16%, transparent 84%, var(--night)), linear-gradient(to bottom, var(--night), transparent 12%, transparent 86%, var(--night));
+}
+
+.home .steps .shot img {
+  transform: scale(1.28);
+  transform-origin: 50% 58%;
+}
+
+.home .steps .shot {
+  aspect-ratio: 3 / 4.4;
+  margin-top: 12px;
+}
+
+.home .walk {
+  max-width: 31em;
+  counter-reset: walk;
+}
+
+.home .walk li {
+  counter-increment: walk;
+  position: relative;
+  padding: 17px 0 17px 2.1em;
+  border-top: 1px solid var(--line);
+  text-wrap: pretty;
+  font-size: clamp(18px, 1.45vw, 21px);
   line-height: 1.5;
+  letter-spacing: -0.01em;
+}
+
+.home .walk li:last-child {
+  border-bottom: 1px solid var(--line);
+}
+
+.home .walk li::before {
+  content: counter(walk);
+  position: absolute;
+  left: 0;
+  font: 700 0.95em / 1.58 var(--display);
   color: var(--dim);
 }
 
-/* 듣는 사람 */
-.home .who .head {
-  padding-bottom: 88px;
+/* 약속: 글이 왼쪽, 그림은 작게 오른쪽 끝으로 나간다 */
+.home .keep {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.78fr);
+  align-items: end;
 }
 
-.home .who .fine {
-  max-width: 28em;
-  margin: 22px auto 0;
+.home .keep .words {
+  padding-left: var(--edge);
+}
+
+.home .keep .shot {
+  aspect-ratio: 5 / 4;
+}
+
+.home .keep .shot::after {
+  background: linear-gradient(to left, transparent 56%, var(--night)), linear-gradient(to bottom, var(--night), transparent 18%, transparent 82%, var(--night));
+}
+
+.home .keep .shot img {
+  transform: scale(1.42);
+  transform-origin: 56% 68%;
+}
+
+.home .vows {
+  max-width: 30em;
+}
+
+.home .vows li {
+  padding: 17px 0;
+  border-top: 1px solid var(--line);
+  font-size: clamp(18px, 1.45vw, 21px);
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+
+.home .vows li:last-child {
+  border-bottom: 1px solid var(--line);
+}
+
+/* 정보: 왼쪽에 이름, 오른쪽에 내용 */
+.home .sheet {
+  margin-top: var(--space);
+  padding: 0 var(--edge);
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 9fr);
+  column-gap: 24px;
+  align-items: start;
+}
+
+.home .sheet h2 {
+  font-size: clamp(22px, 2.1vw, 28px);
+  letter-spacing: -0.03em;
+  line-height: 1.3;
+}
+
+.home .facts dl > div {
+  padding: 19px 0;
+  display: grid;
+  grid-template-columns: 7.5em 1fr;
+  align-items: baseline;
+  column-gap: 16px;
+  border-top: 1px solid var(--line);
+}
+
+.home .facts dl > div:last-child {
+  border-bottom: 1px solid var(--line);
+}
+
+.home .facts dt {
+  font-size: 16px;
+  color: var(--dim);
+}
+
+.home .facts dd {
+  font-size: clamp(18px, 1.6vw, 22px);
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  line-height: 1.45;
+  text-wrap: pretty;
+}
+
+.home .host-name {
+  font: 700 clamp(64px, 9.4vw, 132px) / 0.95 var(--display);
+  letter-spacing: -0.01em;
+}
+
+.home .host .career {
+  margin-top: 30px;
+  font-size: clamp(19px, 1.7vw, 23px);
+  line-height: 1.5;
+  letter-spacing: -0.015em;
+}
+
+.home .host .fine {
+  max-width: 26em;
+  margin-top: 16px;
   font-size: 15px;
+  line-height: 1.6;
   color: var(--dim);
+  text-wrap: pretty;
 }
 
 /* 예약: 방 그림 위에 글 */
 .home .book {
-  min-height: min(72vw, 620px);
+  position: relative;
+  min-height: min(72vw, 640px);
+  margin-top: var(--space);
   display: grid;
   align-items: center;
-  text-align: left;
+  overflow: hidden;
 }
 
 .home .book .bg {
@@ -311,39 +408,43 @@
   position: relative;
   z-index: 1;
   width: 100%;
-  max-width: var(--wrap);
-  margin: 0 auto;
-  padding: 64px 22px;
+  padding: 64px var(--edge);
 }
 
 .home .book h2 {
-  font-size: clamp(36px, 4.6vw, 56px);
+  font-size: clamp(38px, 4.8vw, 62px);
 }
 
-.home .book .sub {
+.home .book-lead {
   max-width: 17em;
-  margin-left: 0;
+  margin-top: 16px;
+  font-size: clamp(18px, 1.6vw, 22px);
+  line-height: 1.5;
+  letter-spacing: -0.015em;
+  text-wrap: pretty;
 }
 
-.home .book .btns {
-  justify-content: flex-start;
+.home .book .acts {
+  margin-top: 22px;
 }
 
 .home .soon {
-  margin-top: 18px;
+  margin-top: 10px;
   font-size: 14px;
   color: var(--dim);
 }
 
 @media (max-width: 833px) {
-  .home .hero {
-    text-align: center;
+  .home {
+    --edge: 22px;
+    --space: 104px;
   }
 
   .home .hero-in {
     grid-template-columns: 1fr;
     gap: 0;
     padding: 28px 22px 34px;
+    text-align: center;
   }
 
   .home .hero h1 {
@@ -366,48 +467,83 @@
     margin: 0 0 14px;
   }
 
-  .home .hero .btns.m-only {
-    display: flex;
-  }
-
   .home .hero .d-only {
     display: none;
   }
 
   .home .say {
     order: 2;
+    align-items: center;
     text-align: center;
   }
 
-  .home .note {
-    margin: 16px auto 0;
+  .home .voice {
+    margin-top: 14px;
+    font-size: 21px;
+  }
+
+  .home .hero .acts {
+    margin-top: 20px;
+    justify-content: center;
+  }
+
+  .home .aside {
+    margin-top: 14px;
   }
 
   .home .door {
     order: 3;
     width: min(340px, 88%);
-    margin: 6px auto 0;
+    margin: 10px auto 0;
   }
 
-  .home .head {
-    padding: 58px 22px 0;
+  .home .scene,
+  .home .sheet {
+    grid-template-columns: minmax(0, 1fr);
   }
 
-  .home .duo {
-    grid-template-columns: 1fr;
+  .home .scene h2 {
+    font-size: clamp(40px, 12vw, 56px);
   }
 
-  .home .shelf {
-    padding: 60px 0 64px;
+  .home .about .shot {
+    aspect-ratio: 5 / 4;
+    margin-right: 14%;
   }
 
-  .home .card {
-    flex-basis: 228px;
-    min-height: 272px;
+  .home .about .words {
+    padding: 8px var(--edge) 0;
+  }
+
+  .home .steps .shot {
+    width: 62%;
+    margin: 40px 0 0 auto;
+    aspect-ratio: 3 / 4;
+  }
+
+  .home .keep .words {
+    padding: 0 var(--edge);
+  }
+
+  .home .keep .shot {
+    width: 86%;
+    margin: 28px 0 0 auto;
+  }
+
+  .home .sheet h2 {
+    margin-bottom: 18px;
+  }
+
+  .home .facts dl > div {
+    grid-template-columns: 5.6em 1fr;
+  }
+
+  .home .host-name {
+    font-size: clamp(60px, 19vw, 84px);
   }
 
   .home .book {
-    min-height: 560px;
+    min-height: 580px;
     align-items: end;
   }
 
@@ -421,7 +557,7 @@
   }
 
   .home .book-in {
-    padding: 0 22px 54px;
+    padding: 0 var(--edge) 56px;
   }
 }
 

@@ -1,4 +1,4 @@
-// 대문과 문서 화면이 함께 쓰는 것: 위쪽 메뉴, 펼친 메뉴, 맨 아래 정보, 장면으로 가기, 떠오르는 움직임.
+// 대문과 문서 화면이 함께 쓰는 것: 위쪽 메뉴, 펼친 메뉴, 맨 아래 정보, 장면으로 가기.
 // 초대 링크로 들어온 손님의 화면과 상담실에는 붙이지 않는다.
 import { COPY } from './copy.js';
 
@@ -47,8 +47,10 @@ export function mountSite() {
   const navIn = make('div', 'site-nav-in');
   const brand = make('a', 'site-brand');
   brand.href = './';
-  brand.append(make('i'), S.brand);
-  brand.firstChild.setAttribute('aria-hidden', 'true');
+  // 상표: 작은 문. 문이 열리면 창에 불이 들어온다.
+  brand.innerHTML =
+    '<svg viewBox="0 0 13 17" aria-hidden="true"><path class="frame" d="M.7 16.3V6.5a5.8 5.8 0 0 1 11.6 0v9.8z"/><path class="pane" d="M4 8.2a2.5 2.5 0 0 1 5 0v2.6H4z"/></svg>';
+  brand.append(S.brand);
   const links = make('nav', 'site-links');
   links.setAttribute('aria-label', S.browse);
   links.append(...S.scenes.map((item) => sceneLink(item)));
@@ -78,19 +80,12 @@ export function mountSite() {
   const footIn = make('div', 'site-foot-in');
   const help = make('p');
   help.append(make('strong', '', S.help.lead), ` ${S.help.lines}`);
-  const cols = make('div', 'cols');
-  cols.append(
-    group(S.browse, S.scenes.slice(0, 3).map((item) => sceneLink(item))),
-    group(S.contact, [...channel, { label: S.mail, href: mail.href }].map((item) => pageLink(item))),
-    group(S.info, [S.guide, S.faq].map((item) => pageLink(item))),
-    group(S.policy, S.policies.map((item) => pageLink(item)))
+  const footLinks = make('nav', 'foot-links');
+  footLinks.setAttribute('aria-label', S.info);
+  footLinks.append(
+    ...[S.guide, S.faq, ...S.policies, ...channel, { label: S.mail, href: mail.href }].map((item) => pageLink(item))
   );
-  const legal = make('div', 'legal');
-  const legalNav = make('nav');
-  legalNav.setAttribute('aria-label', S.policy);
-  legalNav.append(...S.policies.map((item) => pageLink(item)), pageLink({ label: S.ask, href: mail.href }));
-  legal.append(make('span', '', S.rights), legalNav);
-  footIn.append(help, make('p', '', S.disclaimer), cols, legal);
+  footIn.append(help, make('p', '', S.disclaimer), footLinks, make('p', 'rights', S.rights));
   foot.append(footIn);
 
   document.body.prepend(nav, panel, scrim);
@@ -125,19 +120,6 @@ export function mountSite() {
     const a = event.target.closest('a[data-go]');
     if (a && go(a.dataset.go)) event.preventDefault();
   });
-
-  // 내려갈 때 떠오르기
-  const seen = new IntersectionObserver(
-    (entries) => {
-      for (const entry of entries) {
-        if (!entry.isIntersecting) continue;
-        entry.target.classList.add('in');
-        seen.unobserve(entry.target);
-      }
-    },
-    { threshold: 0.18 }
-  );
-  document.querySelectorAll('.rv').forEach((el) => seen.observe(el));
 
   let arrived = false;
   return {
