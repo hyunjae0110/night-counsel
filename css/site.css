@@ -509,3 +509,8 @@
     display: none;
   }
 }
+
+.site-links a[aria-current="page"] {
+  opacity: 1;
+  font-weight: 600;
+}

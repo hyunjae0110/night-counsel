@@ -78,6 +78,7 @@ site.show(state.room === 'none');
   for (const el of document.querySelectorAll('[data-minutes]')) el.textContent = SESSION_MINUTES;
   const R = COPY.home.reserve;
   const open = Boolean(R.open && R.url);
+  if (!$('reserve-link')) return;
   if (open) $('reserve-link').href = R.url;
   $('reserve-link').hidden = !open;
   $('reserve-soon').hidden = open;

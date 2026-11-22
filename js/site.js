@@ -53,14 +53,14 @@ export function mountSite() {
   brand.append(S.brand);
   const links = make('nav', 'site-links');
   links.setAttribute('aria-label', S.browse);
-  links.append(...S.scenes.map((item) => sceneLink(item)));
+  links.append(...S.scenes.map((item) => pageLink(item)));
   const burger = make('button', 'site-burger');
   burger.type = 'button';
   burger.setAttribute('aria-label', S.menu);
   burger.setAttribute('aria-expanded', 'false');
   burger.setAttribute('aria-controls', 'site-panel');
   burger.append(make('span'), make('span'));
-  const cta = sceneLink({ label: '예약 문의', go: 'book' }, 'site-cta');
+  const cta = pageLink({ label: '예약 문의', href: 'book.html' }, 'site-cta');
   navIn.append(brand, links, cta, burger);
   nav.append(navIn);
 
@@ -69,7 +69,7 @@ export function mountSite() {
   panel.id = 'site-panel';
   const panelIn = make('div', 'site-panel-in');
   panelIn.append(
-    group(S.browse, S.scenes.map((item) => sceneLink(item)), 'big'),
+    group(S.browse, S.scenes.map((item) => pageLink(item)), 'big'),
     group(S.quick, [...channel, mail, S.guide].map((item) => pageLink(item)), 'small'),
     group(S.policy, S.policies.map((item) => pageLink(item)), 'small')
   );
@@ -88,6 +88,21 @@ export function mountSite() {
   );
   footIn.append(help, make('p', '', S.disclaimer), footLinks, make('p', 'rights', S.rights));
   foot.append(footIn);
+
+  // 지금 보고 있는 화면의 메뉴에 표시한다
+  const here = location.pathname.split('/').pop().replace(/\.html$/, '');
+  for (const a of nav.querySelectorAll('.site-links a')) {
+    if (a.getAttribute('href').replace(/\.html$/, '') === here) a.setAttribute('aria-current', 'page');
+  }
+  // 예약 화면: 채널을 열기 전에는 단추 대신 안내를 보인다
+  const reserveLink = document.getElementById('reserve-link');
+  const reserveSoon = document.getElementById('reserve-soon');
+  if (reserveLink && reserveSoon) {
+    const open = Boolean(R.open && R.url);
+    if (open) reserveLink.href = R.url;
+    reserveLink.hidden = !open;
+    reserveSoon.hidden = open;
+  }
 
   document.body.prepend(nav, panel, scrim);
   document.body.append(foot);
