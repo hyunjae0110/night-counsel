@@ -1,4 +1,4 @@
-// 대문과 문서 화면이 함께 쓰는 것: 위쪽 메뉴, 펼친 메뉴, 맨 아래 정보, 장면으로 가기.
+// 대문과 나눈 화면, 문서 화면이 함께 쓰는 것: 위쪽 메뉴, 펼친 메뉴, 맨 아래 정보.
 // 초대 링크로 들어온 손님의 화면과 상담실에는 붙이지 않는다.
 import { COPY } from './copy.js';
 
@@ -7,15 +7,6 @@ const make = (tag, className, text) => {
   if (className) node.className = className;
   if (text) node.textContent = text;
   return node;
-};
-
-// 장면으로 가는 링크. 주소의 # 을 바꾸지 않는다(# 뒤는 초대 링크의 방 이름이다).
-// 대문에서는 누르면 그 장면으로 내려가고, 문서 화면에서는 대문으로 가서 그 장면을 연다.
-const sceneLink = (item, className) => {
-  const a = make('a', className, item.label);
-  a.href = `./?go=${item.go}`;
-  a.dataset.go = item.go;
-  return a;
 };
 
 const pageLink = (item, className) => {
@@ -53,14 +44,15 @@ export function mountSite() {
   brand.append(S.brand);
   const links = make('nav', 'site-links');
   links.setAttribute('aria-label', S.browse);
-  links.append(...S.scenes.map((item) => sceneLink(item)));
+  links.append(...S.pages.map((item) => pageLink(item)));
   const burger = make('button', 'site-burger');
   burger.type = 'button';
   burger.setAttribute('aria-label', S.menu);
   burger.setAttribute('aria-expanded', 'false');
   burger.setAttribute('aria-controls', 'site-panel');
   burger.append(make('span'), make('span'));
-  navIn.append(brand, links, burger);
+  const cta = pageLink(S.reserve, 'site-cta');
+  navIn.append(brand, links, cta, burger);
   nav.append(navIn);
 
   // 펼친 메뉴
@@ -68,8 +60,8 @@ export function mountSite() {
   panel.id = 'site-panel';
   const panelIn = make('div', 'site-panel-in');
   panelIn.append(
-    group(S.browse, S.scenes.map((item) => sceneLink(item)), 'big'),
-    group(S.quick, [...channel, mail, S.guide].map((item) => pageLink(item)), 'small'),
+    group(S.browse, S.pages.map((item) => pageLink(item)), 'big'),
+    group(S.quick, [...channel, mail, S.faq].map((item) => pageLink(item)), 'small'),
     group(S.policy, S.policies.map((item) => pageLink(item)), 'small')
   );
   panel.append(panelIn);
@@ -88,6 +80,21 @@ export function mountSite() {
   footIn.append(help, make('p', '', S.disclaimer), footLinks, make('p', 'rights', S.rights));
   foot.append(footIn);
 
+  // 지금 보고 있는 화면의 메뉴에 표시한다
+  const here = location.pathname.split('/').pop().replace(/\.html$/, '');
+  for (const a of [...links.children, ...panel.querySelectorAll('.big a')]) {
+    if (a.getAttribute('href') === here) a.setAttribute('aria-current', 'page');
+  }
+  // 예약 화면: 채널을 열기 전에는 단추 대신 안내를 보인다
+  const reserveLink = document.getElementById('reserve-link');
+  const reserveSoon = document.getElementById('reserve-soon');
+  if (reserveLink && reserveSoon) {
+    const open = Boolean(R.open && R.url);
+    if (open) reserveLink.href = R.url;
+    reserveLink.hidden = !open;
+    reserveSoon.hidden = open;
+  }
+
   document.body.prepend(nav, panel, scrim);
   document.body.append(foot);
 
@@ -104,7 +111,7 @@ export function mountSite() {
     if (event.key === 'Escape') setMenu(false);
   });
 
-  // 장면으로 가기: 이 화면에 그 장면이 보이면 내려가고, 아니면 링크대로 대문으로 간다.
+  // 화면 안의 자리로 가기(이용 안내의 자주 묻는 질문처럼 「?go=이름」으로 넘어왔을 때 쓴다).
   const scene = (name) => {
     const el = document.querySelector(`[data-scene="${name}"]`);
     return el && el.offsetParent !== null ? el : null;
@@ -116,11 +123,6 @@ export function mountSite() {
     scrollTo({ top, behavior: calm.matches ? 'auto' : 'smooth' });
     return true;
   };
-  document.addEventListener('click', (event) => {
-    const a = event.target.closest('a[data-go]');
-    if (a && go(a.dataset.go)) event.preventDefault();
-  });
-
   let arrived = false;
   return {
     // 메뉴와 맨 아래 정보를 보이거나 감춘다(초대 링크로 들어온 손님에게는 감춘다).
@@ -128,7 +130,7 @@ export function mountSite() {
       for (const el of [nav, panel, scrim, foot]) el.hidden = !on;
       if (!on) setMenu(false);
     },
-    // 문서 화면에서 「?go=장면」으로 넘어왔으면 그 장면을 연다. 한 번만 한다.
+    // 「?go=이름」으로 넘어왔으면 그 자리로 내려간다. 한 번만 한다.
     arrive() {
       if (arrived) return;
       arrived = true;

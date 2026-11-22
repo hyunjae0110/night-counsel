@@ -29,11 +29,18 @@
   --scrim: rgba(7, 8, 15, 0.5);
   --glow: rgba(243, 178, 90, 0.55);
   --loud: "Pretendard Variable", Pretendard, "Apple SD Gothic Neo", "Noto Sans KR", system-ui, sans-serif;
-  --site-nav: 48px;
+  --site-nav: 76px;
   --wrap: 1080px;
 
   --text: 16px;
   --text-small: 13px;
   --tap: 44px;
   --radius: 20px;
+}
+
+/* 휴대폰에서는 메뉴 줄이 낮다 */
+@media (max-width: 833px) {
+  :root {
+    --site-nav: 56px;
+  }
 }
