@@ -75,13 +75,11 @@ export const COPY = {
       { label: '예약', go: 'book' },
     ],
     quick: '바로 가기',
-    contact: '예약과 문의',
     info: '안내',
     policy: '약속과 방침',
     channel: '카카오톡 채널',
     mailLabel: '문의 메일',
     mail: 'info@presentnight.com',
-    ask: '문의',
     guide: { label: '이용 안내', href: 'guide.html' },
     faq: { label: '자주 묻는 질문', href: 'guide.html?go=faq' },
     policies: [
@@ -90,7 +88,7 @@ export const COPY = {
     ],
     help: {
       lead: '지금 많이 힘들다면 기다리지 말고 연락하세요.',
-      lines: '자살예방상담전화 109, 청소년상담전화 1388, 긴급 신고 119 · 112',
+      lines: '자살예방상담전화 109, 청소년상담전화 1388, 긴급 신고 119와 112',
     },
     disclaimer: '이곳은 고민을 나누는 자리이며, 치료나 진단을 대신하지 않습니다.',
     rights: '© 2026 밤의 작은 상담소',

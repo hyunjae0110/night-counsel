@@ -33,24 +33,24 @@
 <script type="importmap">
 {
   "imports": {
-    "./js/cards.js": "./js/cards.js?v=9",
-    "./js/chat.js": "./js/chat.js?v=9",
-    "./js/copy.js": "./js/copy.js?v=9",
-    "./js/firebase.js": "./js/firebase.js?v=9",
-    "./js/session.js": "./js/session.js?v=9",
-    "./js/site.js": "./js/site.js?v=9",
-    "./js/sound.js": "./js/sound.js?v=9",
-    "./js/tarot.js": "./js/tarot.js?v=9"
+    "./js/cards.js": "./js/cards.js?v=10",
+    "./js/chat.js": "./js/chat.js?v=10",
+    "./js/copy.js": "./js/copy.js?v=10",
+    "./js/firebase.js": "./js/firebase.js?v=10",
+    "./js/session.js": "./js/session.js?v=10",
+    "./js/site.js": "./js/site.js?v=10",
+    "./js/sound.js": "./js/sound.js?v=10",
+    "./js/tarot.js": "./js/tarot.js?v=10"
   }
 }
 </script>
-<link rel="stylesheet" href="css/tokens.css?v=9">
-<link rel="stylesheet" href="css/base.css?v=9">
-<link rel="stylesheet" href="css/door.css?v=9">
-<link rel="stylesheet" href="css/site.css?v=9">
-<link rel="stylesheet" href="css/home.css?v=9">
-<link rel="stylesheet" href="css/room.css?v=9">
-<link rel="stylesheet" href="css/tarot.css?v=9">
+<link rel="stylesheet" href="css/tokens.css?v=10">
+<link rel="stylesheet" href="css/base.css?v=10">
+<link rel="stylesheet" href="css/door.css?v=10">
+<link rel="stylesheet" href="css/site.css?v=10">
+<link rel="stylesheet" href="css/home.css?v=10">
+<link rel="stylesheet" href="css/room.css?v=10">
+<link rel="stylesheet" href="css/tarot.css?v=10">
 </head>
 <body>
 
@@ -59,84 +59,89 @@
      문 상태 글과 예약 단추는 js/guest.js가 채운다. 메뉴와 맨 아래 정보는 js/site.js가 붙인다. -->
 <main id="home-view" class="home">
 
-  <section class="tile hero">
+  <section class="hero">
     <div class="hero-in">
-      <div>
+      <div class="title">
         <p class="state m-only" role="status"><i aria-hidden="true"></i><span class="js-state"></span></p>
         <h1><span>밤의 </span><span>작은 </span><span>상담소</span></h1>
       </div>
       <div class="door" aria-hidden="true">
-        <img class="off" src="assets/home/door-off.webp?v=9" alt="" width="900" height="900">
-        <img class="on" src="assets/home/door-on.webp?v=9" alt="" width="900" height="900">
+        <img class="off" src="assets/home/door-off.webp?v=10" alt="" width="900" height="900">
+        <img class="on" src="assets/home/door-on.webp?v=10" alt="" width="900" height="900">
       </div>
       <div class="say">
-        <h2 class="d-only">가만히 들어줄 사람이<br>필요한 밤.</h2>
-        <p class="sub m-only">가만히 들어줄 사람이 필요한 밤.</p>
-        <div class="links d-only">
-          <a class="more" href="./?go=book" data-go="book">예약 문의</a>
-          <a class="more" href="./?go=steps" data-go="steps">이용 순서 보기</a>
-        </div>
+        <p class="voice">가만히 들어줄 사람이<br>필요한 밤.</p>
+        <div class="acts"><a class="pill" href="./?go=book" data-go="book">예약 문의</a><a class="link" href="./?go=steps" data-go="steps">이용 순서 보기</a></div>
         <p class="state d-only" role="status"><i aria-hidden="true"></i><span class="js-state"></span></p>
-        <div class="btns m-only"><a class="pill fill" href="./?go=book" data-go="book">예약 문의</a><a class="pill line" href="./?go=about" data-go="about">더 알아보기</a></div>
-        <p class="note js-note"></p>
+        <p class="aside js-note"></p>
       </div>
     </div>
   </section>
 
-  <section class="tile" data-scene="about">
-    <div class="head">
-      <h2 class="rv">한 번에 한 사람.</h2>
-      <p class="sub rv d1">채팅과 타로로, 한 사람의 이야기만 듣습니다.</p>
-      <div class="btns rv d2"><a class="pill fill" href="./?go=steps" data-go="steps">이용 순서</a><a class="pill line" href="./?go=promise" data-go="promise">약속 보기</a></div>
-    </div>
-    <figure class="pic rv"><img src="assets/home/chairs.webp?v=9" alt="촛불 하나가 놓인 둥근 탁자와 마주 놓인 두 의자" width="1000" height="1000" loading="lazy"></figure>
-  </section>
-
-  <div class="duo">
-    <section class="tile" data-scene="steps">
-      <div class="head">
-        <h2 class="rv">문까지, 다섯 걸음.</h2>
-        <p class="sub rv d1">예약 문의부터 자리에 앉기까지.</p>
-        <div class="btns rv d2"><a class="pill line" href="guide.html">이용 안내</a></div>
-      </div>
-      <figure class="pic rv"><img src="assets/home/stones.webp?v=9" alt="불빛이 새어 나오는 문으로 이어진 디딤돌 다섯 개" width="1000" height="1000" loading="lazy"></figure>
-    </section>
-    <section class="tile" data-scene="promise">
-      <div class="head">
-        <h2 class="rv">끝나면 지워집니다.</h2>
-        <p class="sub rv d1">나눈 대화와 카드는 남지 않습니다.</p>
-        <div class="btns rv d2"><a class="pill line" href="privacy.html">개인정보 처리방침</a></div>
-      </div>
-      <figure class="pic rv"><img src="assets/home/promise.webp?v=9" alt="촛불과 쌓아 둔 카드, 모래시계" width="1000" height="1000" loading="lazy"></figure>
-    </section>
-  </div>
-
-  <section class="tile shelf">
-    <div class="shelf-in"><h2 class="rv">알아 둘 것. <em>짧게, 네 가지.</em></h2></div>
-    <ul class="cards rv d1" tabindex="0" aria-label="알아 둘 것 네 가지">
-      <li class="card"><small>시간</small><b>한 번에<br><span data-minutes>30</span>분</b><p>밤 10시와 11시, 일주일에 세 번 엽니다.</p></li>
-      <li class="card"><small>나이</small><b>만 15세<br>이상</b><p>미성년자는 예약할 때 미리 동의를 받습니다.</p></li>
-      <li class="card"><small>값</small><b>무료</b><p>예약과 상담에 비용이 들지 않습니다.</p></li>
-      <li class="card"><small>기록</small><b>이름을<br>묻지 않음</b><p>회원가입이 없고, 대화는 끝나면 지워집니다.</p></li>
-    </ul>
-  </section>
-
-  <section class="tile who" data-scene="who">
-    <div class="head">
-      <span class="eyebrow rv">듣는 사람</span>
-      <h2 class="rv">present.</h2>
-      <p class="sub rv d1">충북대학교 심리학과 졸업.<br>타로 경력 1년 이상.</p>
-      <p class="fine rv d2">AI가 대신 답하지 않습니다. 이곳은 고민을 나누는 자리이며, 치료나 진단을 대신하지 않습니다.</p>
+  <section class="scene about" data-scene="about">
+    <figure class="shot"><img src="assets/home/chairs.webp?v=10" alt="촛불 하나가 놓인 둥근 탁자와 마주 놓인 두 의자" width="1000" height="1000" loading="lazy"></figure>
+    <div class="words">
+      <h2>한 번에<br>한 사람.</h2>
+      <p>채팅과 타로로 한 사람의 이야기만 듣습니다. 이름을 묻지 않고, 나눈 이야기는 끝나면 지워집니다.</p>
+      <p>대나무 숲처럼 털어놓되, 듣는 사람이 한 명 있는 곳입니다.</p>
     </div>
   </section>
 
-  <section class="tile book" data-scene="book">
-    <img class="bg" src="assets/home/room.webp?v=9" alt="" width="1600" height="900" loading="lazy">
+  <section class="scene steps" data-scene="steps">
+    <div class="words">
+      <h2>문까지,<br>다섯 걸음.</h2>
+      <ol class="walk">
+        <li>카카오톡 채널 「present의 밤」으로 예약 문의</li>
+        <li>짧은 신청서 작성. 이름과 연락처는 묻지 않음</li>
+        <li>약속 10분 전에 초대 링크 받기</li>
+        <li>링크로 들어와 약속을 읽고 자리에 앉기</li>
+        <li><span data-minutes>30</span>분 동안 채팅과 타로로 이야기</li>
+      </ol>
+      <a class="link" href="guide.html">이용 안내 전체 보기</a>
+    </div>
+    <figure class="shot"><img src="assets/home/stones.webp?v=10" alt="불빛이 새어 나오는 문으로 이어진 디딤돌 다섯 개" width="1000" height="1000" loading="lazy"></figure>
+  </section>
+
+  <section class="scene keep" data-scene="promise">
+    <div class="words">
+      <h2>끝나면<br>지워집니다.</h2>
+      <ul class="vows">
+        <li>나눈 대화와 카드는 상담이 끝나면 서버에서 지웁니다.</li>
+        <li>이름과 연락처를 묻지 않습니다. 회원가입이 없습니다.</li>
+        <li>AI가 대신 답하지 않습니다. present 한 사람이 듣습니다.</li>
+      </ul>
+      <a class="link" href="privacy.html">개인정보 처리방침</a>
+    </div>
+    <figure class="shot"><img src="assets/home/promise.webp?v=10" alt="촛불과 쌓아 둔 카드, 모래시계" width="1000" height="1000" loading="lazy"></figure>
+  </section>
+
+  <section class="sheet facts">
+    <h2>알아 둘 것</h2>
+    <dl>
+      <div><dt>여는 때</dt><dd>일주일에 세 번, 밤 10시와 11시</dd></div>
+      <div><dt>길이</dt><dd>한 번에 <span data-minutes>30</span>분, 한 사람씩</dd></div>
+      <div><dt>나이</dt><dd>만 15세 이상. 미성년자는 예약할 때 미리 동의를 받습니다.</dd></div>
+      <div><dt>값</dt><dd>무료</dd></div>
+      <div><dt>시간 약속</dt><dd>10분이 지나면 자리를 닫습니다. 변경은 전날까지 받습니다.</dd></div>
+    </dl>
+  </section>
+
+  <section class="sheet host" data-scene="who">
+    <h2>듣는 사람</h2>
+    <div>
+      <p class="host-name">present</p>
+      <p class="career">충북대학교 심리학과 졸업.<br>타로 경력 1년 이상.</p>
+      <p class="fine">이곳은 고민을 나누는 자리이며, 치료나 진단을 대신하지 않습니다.</p>
+    </div>
+  </section>
+
+  <section class="book" data-scene="book">
+    <img class="bg" src="assets/home/room.webp?v=10" alt="" width="1600" height="900" loading="lazy">
     <div class="book-in">
-      <h2 class="rv">예약은<br>카카오톡 채널에서.</h2>
-      <p class="sub rv d1">「present의 밤」으로 문의하면 약속한 시간에 초대 링크를 보내 드립니다.</p>
-      <div class="btns rv d2"><a id="reserve-link" class="pill fill" target="_blank" rel="noopener" hidden>채널로 가기</a><a class="pill line" href="guide.html">이용 안내</a></div>
-      <p id="reserve-soon" class="soon rv d2">예약은 곧 열립니다.</p>
+      <h2>예약은<br>카카오톡 채널에서.</h2>
+      <p class="book-lead">「present의 밤」으로 문의하면 약속한 시간에 초대 링크를 보내 드립니다.</p>
+      <div class="acts"><a id="reserve-link" class="pill" target="_blank" rel="noopener" hidden>채널로 가기</a><a class="link" href="guide.html">이용 안내</a></div>
+      <p id="reserve-soon" class="soon">예약은 곧 열립니다.</p>
     </div>
   </section>
 
@@ -145,8 +150,8 @@
 <!-- 문 화면. 아래 문구는 화면이 뜨는 동안만 보이고, 곧 js/copy.js의 문구로 바뀐다. -->
 <main id="door-view" class="door-screen">
   <div id="door-pic" class="door-pic" aria-hidden="true">
-    <img class="off" src="assets/door-off.jpg?v=9" alt="" width="640" height="640">
-    <img class="on" src="assets/door-on.jpg?v=9" alt="" width="640" height="640">
+    <img class="off" src="assets/door-off.jpg?v=10" alt="" width="640" height="640">
+    <img class="on" src="assets/door-on.jpg?v=10" alt="" width="640" height="640">
   </div>
   <p class="name">밤의 작은 상담소</p>
   <h1 id="door-title">문을 살피는 중이에요</h1>
@@ -186,6 +191,6 @@
 </main>
 
 <noscript><p class="lead" style="margin:24px auto;text-align:center">이 페이지는 자바스크립트를 켜야 열려요.</p></noscript>
-<script type="module" src="js/guest.js?v=9"></script>
+<script type="module" src="js/guest.js?v=10"></script>
 </body>
 </html>
