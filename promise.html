@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#07080f">
+<meta name="robots" content="noindex">
+<meta name="referrer" content="no-referrer">
+<title>약속 · 밤의 작은 상담소</title>
+<meta name="description" content="끝나면 지워집니다. 이름과 연락처를 묻지 않습니다.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&display=swap">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2307080f'/%3E%3Cpath d='M11 27V14a5 5 0 0 1 10 0v13z' fill='%232a1d14' stroke='%23ece7db' stroke-opacity='.3'/%3E%3Cpath d='M13.5 16a2.5 2.5 0 0 1 5 0v3h-5z' fill='%23f3b25a'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<!-- 판 번호: 화면 파일(css, js)을 바꾸면 모든 HTML의 ?v= 숫자를 같은 새 숫자로 올린다. -->
+<script type="importmap">
+{
+  "imports": {
+    "./js/copy.js": "./js/copy.js?v=14"
+  }
+}
+</script>
+<link rel="stylesheet" href="css/tokens.css?v=14">
+<link rel="stylesheet" href="css/base.css?v=14">
+<link rel="stylesheet" href="css/site.css?v=14">
+<link rel="stylesheet" href="css/home.css?v=14">
+</head>
+<body class="doc-page">
+
+<!-- 대문에서 갈라져 나온 화면. 글은 이 파일에 직접 적는다. 메뉴와 맨 아래 정보는 js/site.js가 붙인다. -->
+<main class="home page">
+
+  <section class="plate keep">
+    <img class="pic" src="assets/home/promise.webp?v=14" alt="촛불과 쌓아 둔 카드, 모래시계" width="1500" height="1000" loading="lazy">
+    <div class="words">
+      <h1>끝나면<br>지워집니다.</h1>
+      <ul class="vows">
+        <li>나눈 대화와 카드는 상담이 끝나면 서버에서 지웁니다.</li>
+        <li>이름과 연락처를 묻지 않습니다. 회원가입이 없습니다.</li>
+        <li>AI가 대신 답하지 않습니다. present 한 사람이 듣습니다.</li>
+      </ul>
+      <a class="link" href="privacy">개인정보 처리방침</a>
+    </div>
+  </section>
+
+  <p class="onward"><a class="link" href="host">듣는 사람 보기</a></p>
+
+</main>
+
+<script type="module">
+  import { mountSite } from './js/site.js?v=14';
+  mountSite().arrive();
+</script>
+</body>
+</html>

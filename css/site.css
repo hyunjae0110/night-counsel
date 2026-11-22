@@ -23,33 +23,33 @@
 }
 
 /* 위쪽 메뉴 줄 */
+/* 화면 위에 떠 있다. 왼쪽에 이름, 가운데 알약 모양 줄에 화면 링크, 오른쪽에 예약 단추 */
 .site-nav {
   position: fixed;
   inset: 0 0 auto 0;
   z-index: 20;
   height: var(--site-nav);
-  background: var(--veil);
-  -webkit-backdrop-filter: saturate(180%) blur(20px);
-  backdrop-filter: saturate(180%) blur(20px);
+  background: linear-gradient(var(--night), var(--veil) 60%, transparent);
 }
 
 .site-nav-in {
-  max-width: var(--wrap);
+  max-width: 1296px;
   height: 100%;
   margin: 0 auto;
-  padding: 0 22px;
-  display: flex;
+  padding: 0 28px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  justify-content: space-between;
   gap: 24px;
 }
 
 .site-brand {
+  justify-self: start;
   min-height: var(--tap);
   display: flex;
   align-items: center;
   gap: 9px;
-  font-size: 15px;
+  font-size: 17px;
   font-weight: 600;
   letter-spacing: -0.01em;
 }
@@ -90,14 +90,21 @@
 }
 
 .site-links {
+  padding: 0 8px;
   display: flex;
-  gap: 34px;
-  font-size: 13px;
+  gap: 2px;
+  border: 1px solid var(--line);
+  border-radius: 980px;
+  background: var(--panel);
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+  font-size: 14px;
   color: var(--ink);
 }
 
 .site-links a {
   min-height: var(--tap);
+  padding: 0 16px;
   display: flex;
   align-items: center;
   opacity: 0.82;
@@ -107,7 +114,29 @@
   opacity: 1;
 }
 
+/* 지금 보고 있는 화면 */
+.site-links a[aria-current="page"] {
+  opacity: 1;
+  font-weight: 600;
+}
+
+/* 메뉴의 예약 단추는 상아색이다(촛불색은 대문의 예약 단추 하나에만 쓴다) */
+.site-nav a.site-cta {
+  justify-self: end;
+  min-height: var(--tap);
+  padding: 0 22px;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 980px;
+  background: var(--ink);
+  color: var(--night);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
 .site-burger {
+  justify-self: end;
   width: var(--tap);
   height: var(--tap);
   min-height: 0;
@@ -328,6 +357,14 @@
   line-height: 1.15;
 }
 
+/* 제목은 대문과 같은 명조 */
+.doc h1,
+.doc h2 {
+  font-family: var(--display);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+}
+
 .doc h1 {
   font-size: clamp(40px, 6vw, 56px);
 }
@@ -401,7 +438,14 @@
 }
 
 @media (max-width: 833px) {
-  .site-links {
+  .site-nav-in {
+    padding: 0 22px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .site-links,
+  .site-nav a.site-cta {
     display: none;
   }
 

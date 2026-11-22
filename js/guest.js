@@ -73,16 +73,6 @@ const ERASE_MS = 2200;
 const site = mountSite();
 site.show(state.room === 'none');
 
-// 대문에서 값으로 채우는 곳: 상담 길이와 예약 단추.
-(function fillHome() {
-  for (const el of document.querySelectorAll('[data-minutes]')) el.textContent = SESSION_MINUTES;
-  const R = COPY.home.reserve;
-  const open = Boolean(R.open && R.url);
-  if (open) $('reserve-link').href = R.url;
-  $('reserve-link').hidden = !open;
-  $('reserve-soon').hidden = open;
-})();
-
 const chat = mountChat($('chat'), {
   me: 'g',
   onSend: (text) =>
