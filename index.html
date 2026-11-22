@@ -61,9 +61,16 @@
 
   <section class="hero">
     <h1 class="hide">밤의 작은 상담소</h1>
+    <!-- 세계: PC는 넓은 그림, 휴대폰은 세로 그림. 불 꺼진 그림 위에 불 켜진 그림이 겹친다. -->
     <div class="world" aria-hidden="true">
-      <img class="off" src="assets/home/stones-off.webp?v=13" alt="" width="1000" height="1500">
-      <img class="on" src="assets/home/stones.webp?v=13" alt="" width="1000" height="1500">
+      <picture class="off">
+        <source media="(min-width: 834px)" srcset="assets/home/world-wide-off.webp?v=13" width="1672" height="941">
+        <img src="assets/home/stones-off.webp?v=13" alt="" width="1000" height="1500">
+      </picture>
+      <picture class="on">
+        <source media="(min-width: 834px)" srcset="assets/home/world-wide-on.webp?v=13" width="1672" height="941">
+        <img src="assets/home/stones.webp?v=13" alt="" width="1000" height="1500">
+      </picture>
     </div>
     <p class="state" role="status"><i aria-hidden="true"></i><span class="js-state"></span></p>
   </section>

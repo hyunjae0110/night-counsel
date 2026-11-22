@@ -67,30 +67,41 @@
 }
 
 .home .hero {
+  /* 넓은 그림이 화면을 덮을 때의 크기. 문 옆 알림의 자리를 그림에 맞추는 데 쓴다 */
+  --pic-w: max(100vw, 177.78svh);
+  --pic-h: max(100svh, 56.25vw);
   position: relative;
-  min-height: 100svh;
-  display: grid;
-  justify-items: center;
+  height: 100svh;
   overflow: hidden;
 }
 
-.home .world {
-  position: relative;
-  mix-blend-mode: lighten;
-  -webkit-mask-image: linear-gradient(to right, transparent, #000 24%, #000 76%, transparent);
-  mask-image: linear-gradient(to right, transparent, #000 24%, #000 76%, transparent);
-  height: 142svh;
-  max-height: 1500px;
-  aspect-ratio: 2 / 3;
-  margin-top: calc(var(--site-nav) - 4svh);
-}
-
+.home .world,
+.home .world picture,
 .home .world img {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   max-width: none;
+}
+
+.home .world {
+  mix-blend-mode: lighten;
+}
+
+.home .world img {
+  object-fit: cover;
+  object-position: 50% 30%;
+}
+
+/* 그림의 아래쪽 가장자리는 밤 색으로 덮어 다음 장면으로 이어지게 한다 */
+.home .hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 16%;
+  background: linear-gradient(to bottom, transparent, var(--night));
+  pointer-events: none;
 }
 
 .home .world .on {
@@ -102,12 +113,12 @@
   opacity: 1;
 }
 
-/* 지금 문 상태: 첫 화면 아래쪽에 얹은 작은 알림 */
+/* 지금 문 상태: 문의 창 옆에 붙인 작은 알림 */
 .home .state {
   position: absolute;
-  top: calc(100svh - 76px);
-  left: 50%;
-  transform: translateX(-50%);
+  z-index: 1;
+  left: calc(50% + var(--pic-w) * 0.108);
+  top: calc(30svh + var(--pic-h) * 0.018 - 19px);
   min-height: 38px;
   padding: 0 16px 0 14px;
   display: inline-flex;
@@ -453,15 +464,21 @@
     --round: 24px;
   }
 
+  /* 휴대폰: 세로 그림이 메뉴 아래부터 화면을 채우고, 알림은 그림 아래에 놓인다 */
   .home .world {
+    inset: calc(var(--site-nav) - 8px) 0 64px;
     height: auto;
-    width: 128vw;
-    margin: calc(var(--site-nav) - 6vw) -14vw 0;
-    -webkit-mask-image: none;
-    mask-image: none;
+  }
+
+  .home .hero::after {
+    content: none;
   }
 
   .home .state {
+    left: 50%;
+    top: auto;
+    bottom: 22px;
+    transform: translateX(-50%);
     min-height: 34px;
     font-size: 13px;
   }

@@ -514,3 +514,11 @@
   opacity: 1;
   font-weight: 600;
 }
+
+/* 시안 3: 문서 화면의 제목도 대문과 같은 명조로 쓴다 */
+.doc h1,
+.doc h2 {
+  font-family: var(--display);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+}
