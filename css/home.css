@@ -209,7 +209,7 @@
 }
 
 .home .about .shot {
-  aspect-ratio: 11 / 10;
+  aspect-ratio: 6 / 5;
 }
 
 .home .about .shot::after {
@@ -217,8 +217,7 @@
 }
 
 .home .about .shot img {
-  transform: scale(1.5);
-  transform-origin: 40% 62%;
+  object-position: 0% 50%;
 }
 
 .home .about .words {
@@ -237,12 +236,11 @@
 }
 
 .home .steps .shot img {
-  transform: scale(1.28);
-  transform-origin: 50% 58%;
+  object-position: 50% 40%;
 }
 
 .home .steps .shot {
-  aspect-ratio: 3 / 4.4;
+  aspect-ratio: 2 / 3;
   margin-top: 12px;
 }
 
@@ -285,7 +283,7 @@
 }
 
 .home .keep .shot {
-  aspect-ratio: 5 / 4;
+  aspect-ratio: 4 / 3;
 }
 
 .home .keep .shot::after {
@@ -293,8 +291,7 @@
 }
 
 .home .keep .shot img {
-  transform: scale(1.42);
-  transform-origin: 56% 68%;
+  object-position: 100% 50%;
 }
 
 .home .vows {
@@ -400,7 +397,7 @@
 /* 예약: 방 그림 위에 글 */
 .home .book {
   position: relative;
-  min-height: min(72vw, 640px);
+  min-height: min(56.25vw, 720px);
   margin-top: var(--space);
   display: grid;
   align-items: center;
@@ -413,8 +410,8 @@
   width: 100%;
   height: 100%;
   max-width: none;
-  object-fit: cover;
-  object-position: 78% 50%;
+  object-fit: contain;
+  object-position: 100% 50%;
 }
 
 .home .book::after {
@@ -536,9 +533,9 @@
   }
 
   .home .steps .shot {
-    width: 62%;
+    width: 74%;
     margin: 40px 0 0 auto;
-    aspect-ratio: 3 / 4;
+    aspect-ratio: 2 / 3;
   }
 
   .home .keep .words {
@@ -574,7 +571,8 @@
 
   .home .book .bg {
     height: 62%;
-    object-position: 74% 30%;
+    object-fit: cover;
+    object-position: 93% 30%;
   }
 
   .home .book::after {
