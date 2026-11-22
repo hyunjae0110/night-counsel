@@ -425,7 +425,13 @@
     --round: 24px;
   }
 
-  /* 휴대폰: 세로 그림이 메뉴 아래부터 화면을 채우고, 알림은 그림 아래에 놓인다 */
+  /* 휴대폰: 첫 화면을 화면보다 조금 짧게 해서, 아래 문장의 윗부분이 화면 끝에 살짝 걸리게 한다.
+     더 넣는 것 없이 "아래에 이어진다"는 것을 알린다. */
+  .home .hero {
+    height: calc(100svh - 88px);
+  }
+
+  /* 세로 그림이 메뉴 아래부터 화면을 채우고, 알림은 그림 아래에 놓인다 */
   .home .world {
     inset: calc(var(--site-nav) - 8px) 0 64px;
     height: auto;
@@ -444,8 +450,9 @@
     font-size: 13px;
   }
 
+  /* 문 상태 알림과 문장 사이에 빈 밤을 둔다 */
   .home .say {
-    padding: 8px 22px 0;
+    padding: 64px 22px 0;
   }
 
   .home .say h2 {
