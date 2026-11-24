@@ -7,7 +7,7 @@
 <meta name="robots" content="noindex">
 <meta name="referrer" content="no-referrer">
 <title>약속 · 밤의 작은 상담소</title>
-<meta name="description" content="끝나면 지워집니다. 이름과 연락처를 묻지 않습니다.">
+<meta name="description" content="상담 내용 삭제와 개인정보에 관한 약속.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&display=swap">
@@ -18,14 +18,14 @@
 <script type="importmap">
 {
   "imports": {
-    "./js/copy.js": "./js/copy.js?v=15"
+    "./js/copy.js": "./js/copy.js?v=16"
   }
 }
 </script>
-<link rel="stylesheet" href="css/tokens.css?v=15">
-<link rel="stylesheet" href="css/base.css?v=15">
-<link rel="stylesheet" href="css/site.css?v=15">
-<link rel="stylesheet" href="css/home.css?v=15">
+<link rel="stylesheet" href="css/tokens.css?v=16">
+<link rel="stylesheet" href="css/base.css?v=16">
+<link rel="stylesheet" href="css/site.css?v=16">
+<link rel="stylesheet" href="css/home.css?v=16">
 </head>
 <body class="doc-page">
 
@@ -33,24 +33,34 @@
 <main class="home page">
 
   <section class="plate keep">
-    <img class="pic" src="assets/home/promise.webp?v=15" alt="촛불과 쌓아 둔 카드, 모래시계" width="1500" height="1000" loading="lazy">
+    <img class="pic" src="assets/home/promise.webp?v=16" alt="촛불과 쌓아 둔 카드, 모래시계" width="1500" height="1000">
     <div class="words">
       <h1>끝나면<br>지워집니다.</h1>
-      <ul class="vows">
-        <li>나눈 대화와 카드는 상담이 끝나면 서버에서 지웁니다.</li>
-        <li>이름과 연락처를 묻지 않습니다. 회원가입이 없습니다.</li>
-        <li>AI가 대신 답하지 않습니다. present 한 사람이 듣습니다.</li>
-      </ul>
-      <a class="link" href="privacy">개인정보 처리방침</a>
     </div>
   </section>
 
-  <p class="onward"><a class="link" href="host">듣는 사람 보기</a></p>
+  <!-- 같은 방의 불 켜진 그림과 불 꺼진 그림 -->
+  <div class="duo block">
+    <figure><img src="assets/home/chairs.webp?v=16" alt="촛불이 켜진 탁자와 두 의자" width="1500" height="1000" loading="lazy"><figcaption>상담 중</figcaption></figure>
+    <figure><img src="assets/home/chairs-off.webp?v=16" alt="촛불이 꺼진 같은 탁자와 두 의자" width="1500" height="1000" loading="lazy"><figcaption>상담 종료 후</figcaption></figure>
+  </div>
+
+  <section class="stone block" aria-label="약속">
+    <ul class="vows">
+      <li>상담이 종료되면 대화 내용과 카드는 서버에서 즉시 삭제됩니다.</li>
+      <li>이름과 연락처를 수집하지 않으며, 회원가입 절차가 없습니다.</li>
+      <li>모든 상담은 상담사 present가 직접 진행하며, AI가 답변을 대신하지 않습니다.</li>
+    </ul>
+  </section>
+
+  <p class="after"><a class="link" href="privacy">개인정보 처리방침</a></p>
+
+  <a class="next block" href="host"><span>듣는 사람 보기</span><img src="assets/home/window.webp?v=16" alt="" width="1672" height="941" loading="lazy"></a>
 
 </main>
 
 <script type="module">
-  import { mountSite } from './js/site.js?v=15';
+  import { mountSite } from './js/site.js?v=16';
   mountSite().arrive();
 </script>
 </body>

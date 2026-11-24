@@ -287,23 +287,47 @@
   text-decoration-color: var(--faint);
 }
 
+/* 문장 속 링크(대문 쪽): 줄 높이는 그대로 두고 누르는 자리만 넓힌다 */
+.home .inline {
+  display: inline-block;
+  margin: -12px 0;
+  padding: 12px 0;
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+
 .home a.link:hover,
 .doc a.link:hover {
   text-decoration-color: var(--ink);
 }
 
-/* 맨 아래 정보 */
+/* 맨 아래 정보: 멀리 선 문 그림 위, 어두운 하늘 자리에 글이 놓인다(모든 화면의 마무리) */
 .site-foot {
-  background: var(--night);
-  font-size: 12px;
+  position: relative;
+  min-height: clamp(520px, 42vw, 640px);
+  background: var(--night) url("../assets/home/far.webp") 50% 100% / cover no-repeat;
+  font-size: 13px;
   line-height: 1.6;
   color: var(--dim);
 }
 
+/* 그림의 위쪽 가장자리를 밤 색으로 덮어 앞 장면과 이어지게 한다 */
+.site-foot::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 160px;
+  background: linear-gradient(to bottom, var(--night), var(--clear));
+  pointer-events: none;
+}
+
 .site-foot-in {
-  max-width: var(--wrap);
+  position: relative;
+  max-width: 1296px;
   margin: 0 auto;
-  padding: 22px 22px 34px;
+  padding: 48px 28px 0;
 }
 
 .site-foot p {
@@ -430,6 +454,79 @@
   text-underline-offset: 3px;
 }
 
+/* 처리방침과 약관: 조 제목은 작게, 표는 좁은 화면에서 옆으로 밀어 본다 */
+.doc.law .lead {
+  max-width: none;
+  text-wrap: pretty;
+  font-size: 17px;
+  line-height: 1.7;
+  color: var(--soft);
+}
+
+.doc.law h2 {
+  margin-top: 44px;
+  padding-top: 0;
+  border-top: 0;
+  font-family: var(--loud);
+  font-weight: 700;
+  font-size: 20px;
+  letter-spacing: -0.02em;
+  line-height: 1.4;
+}
+
+.doc.law li {
+  line-height: 1.7;
+}
+
+.doc.law li::marker {
+  color: var(--dim);
+}
+
+.doc .gist {
+  margin-top: 28px;
+  padding: 22px 26px 24px 44px;
+  border-radius: var(--radius);
+  background: var(--tile);
+}
+
+.doc .scroll {
+  margin-top: 16px;
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+}
+
+.doc table {
+  width: 100%;
+  min-width: 620px;
+  border-collapse: collapse;
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.doc th,
+.doc td {
+  padding: 12px 14px;
+  text-align: left;
+  vertical-align: top;
+  font-weight: 400;
+}
+
+.doc thead th {
+  background: var(--tile);
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--dim);
+}
+
+.doc tbody th {
+  font-weight: 600;
+}
+
+.doc tbody tr + tr > * {
+  border-top: 1px solid var(--line);
+}
+
 .doc .ends {
   margin-top: 40px;
   display: flex;
@@ -469,6 +566,14 @@
 
   .doc {
     padding-top: calc(var(--site-nav) + 44px);
+  }
+
+  .site-foot {
+    min-height: 600px;
+  }
+
+  .site-foot-in {
+    padding: 32px 22px 0;
   }
 }
 
