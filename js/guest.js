@@ -212,7 +212,7 @@ function render() {
   if (atHome) return renderHome();
   if (inRoom) return renderRoom();
   if (reading) {
-    $('sit').disabled = !$('agree').checked;
+    $('sit').disabled = !($('agree').checked && $('agree-sensitive').checked);
     $('sit-note').hidden = !state.sitError;
     return;
   }
@@ -258,6 +258,8 @@ function renderHome() {
     })
   );
   $('agree-text').textContent = P.agree;
+  $('sensitive-note').textContent = P.sensitive.note;
+  $('agree-sensitive-text').textContent = P.sensitive.agree;
   $('sit').textContent = P.sit;
   $('promise-back').textContent = P.back;
   $('sit-note').textContent = COPY.door.sitFailed;
@@ -277,10 +279,11 @@ $('promise-back').addEventListener('click', () => {
 });
 
 $('agree').addEventListener('change', render);
+$('agree-sensitive').addEventListener('change', render);
 
-// 약속을 읽었다는 확인은 이 화면에서만 쓰고 어디에도 저장하지 않는다.
+// 약속을 읽었다는 확인과 민감한 이야기에 대한 동의는 이 화면에서만 쓰고 어디에도 저장하지 않는다.
 $('sit').addEventListener('click', async () => {
-  if (state.room !== 'invited' || !state.uid || !$('agree').checked) return;
+  if (state.room !== 'invited' || !state.uid || !$('agree').checked || !$('agree-sensitive').checked) return;
   $('sit').disabled = true;
   state.sitError = false;
   try {
