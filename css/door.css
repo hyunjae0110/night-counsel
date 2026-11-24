@@ -164,6 +164,21 @@
   accent-color: var(--flame);
 }
 
+/* 민감한 이야기에 대한 동의: 설명 한 문단과 그 아래의 체크 칸 */
+.consent {
+  width: min(400px, 100%);
+  margin-top: 18px;
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--dim);
+  text-align: left;
+  word-break: keep-all;
+}
+
+.consent + .agree {
+  margin-top: 8px;
+}
+
 .promise-screen .help {
   margin-top: 24px;
 }
