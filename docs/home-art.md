@@ -16,6 +16,7 @@
 | `step.webp`, `step-tall.webp` | 이용 안내 첫 그림, 대문 「이용 방법 안내」 | 16:9, 2:3 | 왼쪽 3분의 1, 아래쪽 3분의 1 |
 | `ajar.webp`, `ajar-tall.webp` | 대문 「사전 예약제로 운영됩니다.」, 이용 안내의 절차 옆 | 16:9, 2:3 | 왼쪽 3분의 1, 아래쪽 3분의 1 |
 | `far.webp` | 모든 화면의 맨 아래(맨 아래 정보의 바탕) | 16:9 | 위쪽 3분의 2 |
+| `candle.mp4`, `promise.mp4` | `candle.webp`, `promise.webp`와 같은 그림의 영상(불꽃과 빛, 모래만 움직인다). Claude가 그림에서 계산으로 만들었다 | 4:5 (896×1120), 3:2 (1200×800) | 그림과 같음 |
 | `ajar.mp4`, `far.mp4` | `ajar.webp`, `far.webp`와 같은 장면의 영상(빛과 풀만 움직인다). 그림 위에 꼭 맞게 겹친다 | 16:9 (1280×720) | 그림과 같음 |
 | `chairs-off.webp` | 약속 「상담 종료 후」(`chairs.webp`에서 빛만 끈 그림) | 3:2 | 오른쪽 3분의 1 |
 | `candle.webp`, `cards.webp`, `hourglass.webp` | 대문 소품 세 칸, 소개, 듣는 사람 | 4:5 | 물건 둘레 |

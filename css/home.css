@@ -288,8 +288,12 @@
 }
 
 .home .tile img,
+.home .tile video,
 .home .shot img,
 .home .shot video,
+.home .cell video,
+.home .inset img,
+.home .inset video,
 .home .duo img,
 .home .cell img {
   position: absolute;
@@ -300,7 +304,8 @@
   object-fit: cover;
 }
 
-.home .tile img {
+.home .tile img,
+.home .tile video {
   object-position: 50% 40%;
 }
 
@@ -454,12 +459,15 @@
 }
 
 .home .band .inset {
-  width: 100%;
+  position: relative;
   height: 320px;
-  max-width: none;
-  object-fit: cover;
-  object-position: 88% 45%;
   border-radius: 24px;
+  overflow: hidden;
+}
+
+.home .inset img,
+.home .inset video {
+  object-position: 88% 45%;
 }
 
 /* 정보 상자: 크기가 다른 칸과 그림을 섞어 놓는다(소개의 운영 안내) */
@@ -985,6 +993,13 @@
     width: 100%;
     height: auto;
     aspect-ratio: 4 / 3;
+  }
+
+  /* 영상은 위쪽의 그림 자리에 꼭 맞게 겹친다 */
+  .home .plate video.pic {
+    position: absolute;
+    top: 0;
+    left: 0;
   }
 
   .home .plate::after {
