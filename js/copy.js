@@ -64,6 +64,8 @@ export const COPY = {
 
   // 메뉴와 맨 아래 정보(대문과 문서 화면이 함께 쓴다). js/site.js가 이 글자로 만든다.
   site: {
+    // 영상 파일을 바꾸면 이 숫자를 올린다(HTML에 직접 적은 영상의 ?v= 숫자도 함께)
+    motionVersion: 1,
     brand: '밤의 작은 상담소',
     menu: '메뉴',
     browse: '둘러보기',
