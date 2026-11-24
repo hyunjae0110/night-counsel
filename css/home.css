@@ -289,6 +289,7 @@
 
 .home .tile img,
 .home .shot img,
+.home .shot video,
 .home .duo img,
 .home .cell img {
   position: absolute;
@@ -347,7 +348,8 @@
   background: var(--tile);
 }
 
-.home .shot img {
+.home .shot img,
+.home .shot video {
   object-position: 100% 50%;
 }
 
@@ -401,7 +403,8 @@
   align-items: center;
 }
 
-.home .pair .shot.wide img {
+.home .pair .shot.wide img,
+.home .pair .shot.wide video {
   object-position: 88% 50%;
 }
 
@@ -1072,6 +1075,11 @@
 
   .home .pair .shot.wide {
     align-items: flex-end;
+  }
+
+  /* 좁은 화면에서는 세로 그림이 보이므로 가로 영상은 감춘다(불러오지도 않는다) */
+  .home .wide-only {
+    display: none;
   }
 
   .home .shot::after {

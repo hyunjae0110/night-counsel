@@ -25,6 +25,48 @@ const group = (title, links, className) => {
   return box;
 };
 
+// 영상(video.motion): 소리 없이 되풀이되는 짧은 장면. 조건은 docs/guidelines.md의 「영상」.
+// - 화면에 보일 때만 파일을 불러와 돌린다. 한 번에 하나만 돈다(가장 많이 보이는 것).
+// - 움직임을 줄이도록 설정한 사람에게는 불러오지 않는다(아래에 깔린 그림이 보인다).
+// - 좁은 화면에서 감춰 둔 영상(display: none)은 불러오지 않는다.
+function mountMotion(calm) {
+  const videos = [...document.querySelectorAll('video.motion')];
+  if (!videos.length || !('IntersectionObserver' in window)) return;
+  const seen = new Map();
+  for (const v of videos) {
+    v.muted = true;
+    v.loop = true;
+    v.playsInline = true;
+    v.preload = 'none';
+    v.setAttribute('aria-hidden', 'true');
+    v.tabIndex = -1;
+  }
+  const settle = () => {
+    let best = null;
+    for (const v of videos) {
+      const share = seen.get(v) || 0;
+      if (!calm.matches && v.offsetParent !== null && share > 0.35 && (!best || share > seen.get(best))) best = v;
+    }
+    for (const v of videos) {
+      if (v === best) {
+        if (!v.src) v.src = v.dataset.src;
+        v.play().catch(() => {});
+      } else if (!v.paused) {
+        v.pause();
+      }
+    }
+  };
+  const watch = new IntersectionObserver(
+    (entries) => {
+      for (const e of entries) seen.set(e.target, e.isIntersecting ? e.intersectionRatio : 0);
+      settle();
+    },
+    { threshold: [0, 0.2, 0.35, 0.5, 0.65, 0.8, 1] }
+  );
+  for (const v of videos) watch.observe(v);
+  calm.addEventListener('change', settle);
+}
+
 export function mountSite() {
   const S = COPY.site;
   const R = COPY.home.reserve;
@@ -78,7 +120,10 @@ export function mountSite() {
     ...[S.guide, S.faq, ...S.policies, ...channel, { label: S.mail, href: mail.href }].map((item) => pageLink(item))
   );
   footIn.append(help, make('p', '', S.disclaimer), footLinks, make('p', 'rights', S.rights));
-  foot.append(footIn);
+  // 맨 아래 그림과 같은 장면의 영상(창의 빛과 풀만 움직인다). 그림은 CSS 바탕으로 그대로 깔려 있다.
+  const footVideo = make('video', 'motion');
+  footVideo.dataset.src = `assets/home/far.mp4?v=${S.motionVersion}`;
+  foot.append(footVideo, footIn);
 
   // 지금 보고 있는 화면의 메뉴에 표시한다
   const here = location.pathname.split('/').pop().replace(/\.html$/, '');
@@ -97,6 +142,7 @@ export function mountSite() {
 
   document.body.prepend(nav, panel, scrim);
   document.body.append(foot);
+  mountMotion(calm);
 
   const setMenu = (open) => {
     root.classList.toggle('menu-open', open);

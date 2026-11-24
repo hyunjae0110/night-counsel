@@ -313,9 +313,21 @@
   color: var(--dim);
 }
 
+/* 같은 장면의 영상이 바탕 그림 위에 꼭 맞게 겹친다 */
+.site-foot video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 100%;
+  pointer-events: none;
+}
+
 /* 그림의 위쪽 가장자리를 밤 색으로 덮어 앞 장면과 이어지게 한다 */
 .site-foot::before {
   content: "";
+  z-index: 1;
   position: absolute;
   inset: 0 0 auto 0;
   height: 160px;
@@ -325,6 +337,7 @@
 
 .site-foot-in {
   position: relative;
+  z-index: 2;
   max-width: 1296px;
   margin: 0 auto;
   padding: 48px 28px 0;
