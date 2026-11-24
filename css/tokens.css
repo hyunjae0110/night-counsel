@@ -22,6 +22,12 @@
   /* 대문과 문서 화면에서 더 쓰는 값 */
   --gap: #14151f;
   --tile: #11121c;
+  --tile-blue: #171a27;
+  --tile-warm: #1c1519;
+  --soft: #d2ccc0;
+  --shade: rgba(7, 8, 15, 0.92);
+  --shade-mid: rgba(7, 8, 15, 0.5);
+  --clear: rgba(7, 8, 15, 0);
   --faint: #6f6c7a;
   --flame-ink: #1c1304;
   --veil: rgba(7, 8, 15, 0.72);
